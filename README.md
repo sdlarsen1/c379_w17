@@ -8,7 +8,7 @@ All changes to the code in the future should be submitted as a PR, and each PR s
 1. Fork the repo at https://github.com/sdlarsen1/c379_w17 to your own Github repo.  
 
 2. Make a local clone of your fork on your own computer.   
-` git clone https://github.com/username/Unter `  
+` git clone https://github.com/username/c379_w17 `  
 
 3. Add the original repo as new remote.  
 `git remote add upstream https://github.com/sdlarsen1/c379_w17`
