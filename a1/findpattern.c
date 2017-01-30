@@ -28,7 +28,7 @@ void segfault_handler(int sig, siginfo_t* sigInfo, void* ucontext)
 {
     struct sigaction saSigSegV;     // re-register
     saSigSegV.sa_sigaction = (segfault_handler);
-    saSigSegV.sa_flags = SA_RESTART | SA_SIGINFO | SA_RESETHAND | SA_NODEFER;
+    saSigSegV.sa_flags = SA_RESTART | SA_SIGINFO | SA_RESETHAND;
 
     if(sigaction(SIGSEGV, &saSigSegV, NULL) < 0)
     {
@@ -48,7 +48,7 @@ unsigned int findpattern(unsigned char *pattern,
 
     struct sigaction saSigSegV;     // re-register
     saSigSegV.sa_sigaction = (segfault_handler);
-    saSigSegV.sa_flags = SA_RESTART | SA_SIGINFO | SA_RESETHAND | SA_NODEFER;
+    saSigSegV.sa_flags = SA_RESTART | SA_SIGINFO | SA_RESETHAND;
 
     if(sigaction(SIGSEGV, &saSigSegV, NULL) < 0)
     {
@@ -61,7 +61,7 @@ unsigned int findpattern(unsigned char *pattern,
 	{
 		mem_ptr = page_ptr;
 
-		status = sigsetjmp(env, 0);	// status == SUCCESS
+		status = sigsetjmp(env, 1);	// status == SUCCESS
 		printf("Address %x\tStatus %d\n", (int) (unsigned long) mem_ptr, status);
 
 
@@ -69,7 +69,7 @@ unsigned int findpattern(unsigned char *pattern,
 
 		test = *mem_ptr;		// read test
 
-		status = sigsetjmp(env, 0);
+		status = sigsetjmp(env, 1);
 		mode = MEM_RO;
 
 		if (status == SUCCESS)
