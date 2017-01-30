@@ -34,7 +34,7 @@ void register_handler(void)
 
 void segfault_handler(int sig, siginfo_t* sigInfo, void* ucontext)
 {
-	register_handler();
+        register_handler();
 	siglongjmp(env, 1); 
 }
 
@@ -46,7 +46,9 @@ unsigned int findpattern(unsigned char *pattern,
 	BYTE *mem_ptr, *page_ptr;
 	BYTE test, mode = 0;
 
-	for ( page_ptr = (void *) (unsigned long) 4096; (unsigned long) page_ptr < MAX_ADDRESS; 
+	register_handler();
+
+	for ( page_ptr = (void *) (unsigned long) 0; (unsigned long) page_ptr < MAX_ADDRESS; 
 			page_ptr += (unsigned long)  getpagesize() )
 	{
 		mem_ptr = page_ptr;

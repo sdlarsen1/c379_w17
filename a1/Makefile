@@ -1,6 +1,6 @@
 OBJS = test.o findpattern.o
 CC = gcc
-FLAGS = -m32
+FLAGS = -m32 -std=c99
 TITLE = -o output
 
 all: $(OBJS)
