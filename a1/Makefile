@@ -11,3 +11,6 @@ findpattern.o: findpattern.c findpattern.h
 
 test.o: test.c findpattern.h
 	$(CC) -c $(FLAGS) test.c
+
+clean:
+	rm -rf output *.o
