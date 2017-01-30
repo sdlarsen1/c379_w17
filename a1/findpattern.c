@@ -80,6 +80,27 @@ unsigned int findpattern(unsigned char *pattern,
 			mode = MEM_RW;
 		}
 
+		int num_match = 0;
+		for (;mem_ptr < page_ptr + getpagesize(); mem_ptr++)
+		{
+		  if (*mem_ptr == pattern[num_match])
+		  {
+		    num_match += 1;
+
+		    if (num_match == patlength)
+		      {
+			// add the pattern
+			locations->location = (unsigned int) mem_ptr - patlength;
+			locations->mode = mode;
+			locations++;
+		      }
+		  }
+		  else
+		  {
+		    num_match = 0;
+		  }
+		}
+
 	}
 
 	return 0;
