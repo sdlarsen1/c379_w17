@@ -5,46 +5,73 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <stdbool.h>
+#include <setjmp.h>
 
-// need to add jumps or look for sigjmp to deal with
-// infinite sigsegv loop
 
-bool MEM_FAIL = false;
+typedef unsigned char BYTE;
 
-void segfault_handler(int sig) {
-    MEM_FAIL = true;
+jmp_buf env;
+enum {SUCCESS, FAILURE} status;
+
+void segfault_handler(int sig, siginfo_t* sigInfo, void* ucontext);
+
+void register_handler(void)
+{
+        struct sigaction saSigSegV;     // re-register
+        saSigSegV.sa_sigaction = (segfault_handler);
+        saSigSegV.sa_flags = SA_RESTART | SA_SIGINFO | SA_RESETHAND;
+
+        if(sigaction(SIGSEGV, &saSigSegV, NULL) < 0)
+        {
+                perror("ERROR: registering SigFault_Handler\n");
+                exit(1);
+        }
+
+        return;
+
 }
 
-unsigned int findpattern(unsigned char *pattern, unsigned int patlength,
-     struct patmatch *locations, unsigned int loclength) {
 
-    (void) signal(SIGSEGV, segfault_handler);  // temporary sig handler
-    char mode;
+void segfault_handler(int sig, siginfo_t* sigInfo, void* ucontext)
+{
+	register_handler();
+	siglongjmp(env, 1); 
+}
 
-    unsigned int *mem_pointer;
-    unsigned long page;
-    for (page = 0, mem_pointer = 0; page < MAX_ADDRESS;
-        mem_pointer += getpagesize(), page += getpagesize()) {
-        // check for valid mem location
-        // if not, continue to next page
-        // if valid, perform read/write test
-        MEM_FAIL = false;
-        int read;
-        printf("%ld\n", page);
+unsigned int findpattern(unsigned char *pattern, 
+			unsigned int patlength,
+			struct patmatch *locations, 
+			unsigned int loclength) 
+{
+	BYTE *mem_ptr, *page_ptr;
+	BYTE test, mode = 0;
 
-        read = *mem_pointer;  // read test
-        printf("Got to read test\n");
-        if (!MEM_FAIL) {
-            *mem_pointer = 1;  // write test , if pass read test
-            printf("Got to write test\n");
-            if (!MEM_FAIL) {
-                mode = MEM_RW;
-            } else {
-                mode = MEM_RO;
-            }
-        } else {
-            continue;
-        }
-    }
-    return 0;
+	for ( page_ptr = (void *) (unsigned long) 4096; (unsigned long) page_ptr < MAX_ADDRESS; 
+			page_ptr += (unsigned long)  getpagesize() )
+	{
+		mem_ptr = page_ptr;
+	
+		status = sigsetjmp(env, 0);	// status == SUCCESS
+		printf("Address %x\tStatus %d\n", (int) (unsigned long) mem_ptr, status);
+		
+
+		if (status == FAILURE) continue;// memory not readable
+
+		register_handler();
+		test = *mem_ptr;		// read test
+
+		//status = sigsetjmp(env, 0);
+		//mode = MEM_RO;
+
+		//if (status == SUCCESS)
+		//{
+		//	test = *mem_ptr;	// write test
+		//	*mem_ptr  = 0;
+		//	*mem_ptr = test;
+		//	mode = MEM_RW;
+		//}
+
+	}
+	
+	return 0;
 }
