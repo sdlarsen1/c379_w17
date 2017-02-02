@@ -47,15 +47,14 @@ unsigned int findpattern(unsigned char *pattern,
             exit(1);
     }
 
-	for ( page_ptr = (void *) (unsigned long) 0; (unsigned long) page_ptr < MAX_ADDRESS;
+	for ( page_ptr = (void *) (unsigned long) 0; 
+			(unsigned long) page_ptr < MAX_ADDRESS - getpagesize();
 			page_ptr += (unsigned long)  getpagesize() )
 	{
 		mem_ptr = page_ptr;
 
 		status = sigsetjmp(env, 1);	// status == SUCCESS
-		printf("Address %x\tStatus %d\n", (int) (unsigned long) mem_ptr, status);
-
-
+		
 		if (status == FAILURE) continue;// memory not readable
 
 		test = *mem_ptr;		// read test
@@ -71,6 +70,9 @@ unsigned int findpattern(unsigned char *pattern,
 			mode = MEM_RW;
 		}
 
+		printf("Address %x\tMode %d\n", (int) (unsigned long) mem_ptr, mode);
+
+
 		int num_match = 0;
 		for (;mem_ptr < page_ptr + getpagesize(); mem_ptr++)
 		{
@@ -81,10 +83,14 @@ unsigned int findpattern(unsigned char *pattern,
 		    if (num_match == patlength)
 		      {
 			// add the pattern
-			locations->location = (unsigned int) mem_ptr - patlength;
-			locations->mode = mode;
-			locations++;
+			if (locations < loclength)
+			{
+				locations->location = (unsigned int) mem_ptr - patlength;
+				locations->mode = mode;
+				locations++;
+			}
 			num_patterns_found ++;
+			num_match = 0;
 		      }
 		  }
 		  else
