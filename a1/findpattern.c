@@ -70,36 +70,54 @@ unsigned int findpattern(unsigned char *pattern,
 			mode = MEM_RW;
 		}
 
-		printf("Address %x\tMode %d\n", (int) (unsigned long) mem_ptr, mode);
+		printf("Address %.8x\tMode %d\n", (int) (unsigned long) mem_ptr, mode);
 
 
-		int num_match = 0;
+		int num_char_match = 0;
 		for (;mem_ptr < page_ptr + getpagesize(); mem_ptr++)
 		{
-		  if (*mem_ptr == pattern[num_match])
+		  if (*mem_ptr == pattern[num_char_match])
 		  {
-		    num_match++;
+		    num_char_match++;
 
-		    if (num_match == patlength)
+		    if (num_char_match == patlength)
 		      {
 			// add the pattern
-			if (locations < loclength)
+			if (num_patterns_found < loclength)
 			{
 				locations->location = (unsigned int) mem_ptr - patlength;
 				locations->mode = mode;
 				locations++;
 			}
 			num_patterns_found ++;
-			num_match = 0;
+			num_char_match = 0;
 		      }
 		  }
-		  else
+		  else    // pattern broke, but we need to check if
+			  // this is the start of a new pattern.
 		  {
-		    num_match = 0;
+		    num_char_match = 0;
+		    if (*mem_ptr == pattern[num_char_match])
+		    {
+		        num_char_match++;
+
+		        if (num_char_match == patlength)
+		        {
+			    // add the pattern
+			    if (num_patterns_found < loclength)
+			    {
+				locations->location = (unsigned int) mem_ptr - patlength;
+				locations->mode = mode;
+				locations++;
+			    }
+			    num_patterns_found ++;
+			    num_char_match = 0;
+		        }
+		     }
 		  }
 		}
 
 	}
 
-	return 0;
+	return num_patterns_found;
 }
