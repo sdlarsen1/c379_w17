@@ -13,16 +13,6 @@ typedef unsigned char BYTE;
 jmp_buf env;
 enum {SUCCESS, FAILURE} status;
 
-void segfault_handler(int sig, siginfo_t* sigInfo, void* ucontext);
-
-void register_handler(void)
-{
-
-
-        return;
-
-}
-
 
 void segfault_handler(int sig, siginfo_t* sigInfo, void* ucontext)
 {
@@ -45,6 +35,7 @@ unsigned int findpattern(unsigned char *pattern,
 {
 	BYTE *mem_ptr, *page_ptr;
 	BYTE test, mode = 0;
+	unsigned int num_patterns_found = 0;
 
     struct sigaction saSigSegV;     // re-register
     saSigSegV.sa_sigaction = (segfault_handler);
@@ -85,7 +76,7 @@ unsigned int findpattern(unsigned char *pattern,
 		{
 		  if (*mem_ptr == pattern[num_match])
 		  {
-		    num_match += 1;
+		    num_match++;
 
 		    if (num_match == patlength)
 		      {
@@ -93,6 +84,7 @@ unsigned int findpattern(unsigned char *pattern,
 			locations->location = (unsigned int) mem_ptr - patlength;
 			locations->mode = mode;
 			locations++;
+			num_patterns_found ++;
 		      }
 		  }
 		  else
