@@ -5,17 +5,18 @@
 int main(int argc, char *argv[]) {
 
     char *pattern = argv[0];
-    struct patmatch *locations = malloc(sizeof(struct patmatch));
+    int loclength = 16;
+    struct patmatch *locations = malloc(sizeof(struct patmatch) * loclength);
 
 
     printf("Test1\n");
     printf("Memory modified on the heap using malloc()\n");
 
     printf("Pass 1\n");
-    findpattern(pattern, sizeof(pattern), locations, 16);
+    findpattern(pattern, sizeof(pattern), locations, loclength);
 
     // make changes
 
     printf("Pass 2\n");
-    findpattern(pattern, sizeof(pattern), locations, 16);
+    findpattern(pattern, sizeof(pattern), locations, loclength);
 }
