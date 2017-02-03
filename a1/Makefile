@@ -11,7 +11,7 @@ findpattern.o: findpattern.c findpattern.h
 	$(CC) -c $(FLAGS) findpattern.c
 
 driver1.o: driver1.c findpattern.h
-	$(CC) -c $(FLAGS) -E driver1.c $(SETPAT) 
+	$(CC) -c $(FLAGS) driver1.c $(SETPAT) 
 test.o: test.c findpattern.h
 	$(CC) -c $(FLAGS) test.c
 

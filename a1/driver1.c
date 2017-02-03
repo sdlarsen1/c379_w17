@@ -5,13 +5,17 @@
 
 
 #define MIN(x, y) (((x) < (y)) ? (x) : (y))
+
+// https://gcc.gnu.org/onlinedocs/cpp/Stringification.html
+#define STRINGIFY(s) XSTRINGIFY(s)
+#define XSTRINGIFY(s) #s
 #ifndef P
 #define P ""
 #endif
 
 int main(int argc, char *argv[]) {
 
-    char *pattern = P;
+    char *pattern = STRINGIFY(P);
     int loclength = 16, patlength, patterns_found, i;
     struct patmatch *locations = malloc(sizeof(struct patmatch) * loclength);
     struct patmatch *loc;
@@ -24,9 +28,10 @@ int main(int argc, char *argv[]) {
     // The size of pattern is always the same   >!!!!!!!< this is a pointer
     patterns_found = findpattern(pattern, patlength, locations, loclength);
     printf("Found %d instances of the pattern.\n", patterns_found);
+    
     // make changes
-
-    char c = '1';
+    char *new_instance = malloc(patlength + 1);
+    strcpy(pattern, new_instance);
     
     printf("Pass 2\n");
     patterns_found = findpattern(pattern, patlength, locations, loclength);
