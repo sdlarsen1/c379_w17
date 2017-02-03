@@ -6,12 +6,12 @@
 
 #define MIN(x, y) (((x) < (y)) ? (x) : (y))
 #ifndef P
-#define P 0
+#define P ""
 #endif
 
 int main(int argc, char *argv[]) {
 
-    char *pattern = argv[1];
+    char *pattern = P;
     int loclength = 16, patlength, patterns_found, i;
     struct patmatch *locations = malloc(sizeof(struct patmatch) * loclength);
     struct patmatch *loc;
@@ -32,7 +32,7 @@ int main(int argc, char *argv[]) {
     patterns_found = findpattern(pattern, patlength, locations, loclength);
     printf("Found %d instances of the pattern.\n", patterns_found);
 
-    // out where we found the pattern.
+    // print out where we found the pattern.
     for (loc = locations, i = 0; i < MIN(loclength, patterns_found); i++, loc++)
     {
 	printf("Pattern found at %.8x, ", loc->location);
