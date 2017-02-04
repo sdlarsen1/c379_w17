@@ -37,6 +37,8 @@ unsigned int findpattern(unsigned char *pattern,
 	BYTE test, mode = 0;
 	unsigned int num_patterns_found = 0;
 
+	// ----FOR DEBUG
+
     struct sigaction saSigSegV;     // re-register
     saSigSegV.sa_sigaction = (segfault_handler);
     saSigSegV.sa_flags = SA_RESTART | SA_SIGINFO | SA_RESETHAND;
@@ -70,8 +72,9 @@ unsigned int findpattern(unsigned char *pattern,
 			mode = MEM_RW;
 		}
 
-		printf("Address %.8x\tMode %d\n", (int) (unsigned long) mem_ptr, mode);
-
+		//printf("Address %.8x\tMode %d\n", (int) (unsigned long) mem_ptr, mode);
+		//------FOR DEBUG-------------
+	
 
 		int num_char_match = 0;
 		for (;mem_ptr < page_ptr + getpagesize(); mem_ptr++)
@@ -80,16 +83,17 @@ unsigned int findpattern(unsigned char *pattern,
 		  {
 		    num_char_match++;
 
+
 		    if (num_char_match == patlength)
 		      {
 			// add the pattern
 			if (num_patterns_found < loclength)
 			{
-				locations->location = (unsigned int) mem_ptr - patlength;
+				locations->location = (unsigned int) mem_ptr - patlength + 1;
 				locations->mode = mode;
 				locations++;
 			}
-			num_patterns_found ++;
+			num_patterns_found++;
 			num_char_match = 0;
 		      }
 		  }
@@ -99,7 +103,7 @@ unsigned int findpattern(unsigned char *pattern,
 		    num_char_match = 0;
 		    if (*mem_ptr == pattern[num_char_match])
 		    {
-		        num_char_match++;
+			num_char_match++;
 
 		        if (num_char_match == patlength)
 		        {
