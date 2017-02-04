@@ -16,9 +16,10 @@
 
 int call_findpattern(char *pattern, int patlength,
     struct patmatch *locations, int loclength) {
-        
-    char *new_instance = pattern;
-    char *new_instance2 = pattern;
+
+    char *new_instance, *new_instance2;
+    strcpy(new_instance, pattern);
+    strcpy(new_instance, pattern);
 
     int patterns_found = findpattern(pattern, patlength, locations, loclength);
     return patterns_found;
