@@ -33,11 +33,11 @@ unsigned int findpattern(unsigned char *pattern,
 			struct patmatch *locations,
 			unsigned int loclength)
 {
-	BYTE *mem_ptr, *page_ptr;
-	BYTE test, mode = 0;
-	unsigned int num_patterns_found = 0;
+    BYTE *mem_ptr, *page_ptr;
+    BYTE test, mode = 0;
+    unsigned int num_patterns_found = 0;
 
-	// ----FOR DEBUG
+
 
     struct sigaction saSigSegV;     // re-register
     saSigSegV.sa_sigaction = (segfault_handler);
@@ -89,7 +89,7 @@ unsigned int findpattern(unsigned char *pattern,
 			// add the pattern
 			if (num_patterns_found < loclength)
 			{
-				locations->location = (unsigned int) mem_ptr - patlength + 1;
+				locations->location = (unsigned int) (mem_ptr - patlength) + 1;
 				locations->mode = mode;
 				locations++;
 			}
@@ -110,7 +110,7 @@ unsigned int findpattern(unsigned char *pattern,
 			    // add the pattern
 			    if (num_patterns_found < loclength)
 			    {
-				locations->location = (unsigned int) mem_ptr - patlength;
+				locations->location = (unsigned int) (mem_ptr - patlength) + 1;
 				locations->mode = mode;
 				locations++;
 			    }

@@ -17,8 +17,18 @@
 int call_findpattern(char *pattern, int patlength,
     struct patmatch *locations, int loclength) {
 
-    char *new_instance = *pattern;
-    char *new_innstance2 = *pattern;
+    char new_instance[100] = {0};
+    char new_instance2[100] = {0};
+
+    strcpy(new_instance, pattern);
+    printf("New instance of pattern at %.x\n", (unsigned int) new_instance);
+
+    strcpy(new_instance2, pattern);
+    printf("New instance of pattern at %.x\n", (unsigned int) new_instance2);
+
+
+   // *new_instance = *pattern;
+    //*new_instance2 = *pattern;
 
     int patterns_found = findpattern(pattern, patlength, locations, loclength);
     return patterns_found;
@@ -32,16 +42,23 @@ int main(int argc, char *argv[]) {
     struct patmatch *locations = malloc(sizeof(struct patmatch) * loclength);
     struct patmatch *loc;
     patlength = strlen(pattern);
-
     printf("Test2\n");
     printf("Memory modified on the stack using local variables\n");
     printf("The pattern is: %s", pattern);
 
     printf("\nPass 1\n");
-    // The size of pattern is always the same   >!!!!!!!< this is a pointer
+ 
     patterns_found = findpattern(pattern, patlength, locations, loclength);
     printf("Found %d instances of the pattern.\n", patterns_found);
-
+    // print out where we found the pattern.
+    for (loc = locations, i = 0; i < MIN(loclength, patterns_found); i++, loc++) {
+        printf("Pattern found at %.8x, ", loc->location);
+        if (loc->mode == 0) {
+            printf("Mode: MEM_RW\n");
+        } else {
+            printf("Mode: MEM_RO\n");
+        }
+    }
 
 
     // start 2nd pass

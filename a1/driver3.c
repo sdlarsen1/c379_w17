@@ -3,7 +3,8 @@
 #include "findpattern.h"
 #include <string.h>
 #include <sys/mman.h>
-
+#include <sys/stat.h>
+#include <fcntl.h>
 
 #define MIN(x, y) (((x) < (y)) ? (x) : (y))
 
@@ -18,6 +19,10 @@
 int main(int argc, char *argv[]) {
 
     char *pattern = STRINGIFY(P);
+    char *filename = "driver3file";
+    FILE *fp;
+    int fd;
+    void *fileregion;
     int loclength = 16, patlength, patterns_found, i;
     struct patmatch *locations = malloc(sizeof(struct patmatch) * loclength);
     struct patmatch *loc;
@@ -28,7 +33,7 @@ int main(int argc, char *argv[]) {
     printf("The pattern is: %s", pattern);
 
     printf("\nPass 1\n");
-    // The size of pattern is always the same   >!!!!!!!< this is a pointer
+  
     patterns_found = findpattern(pattern, patlength, locations, loclength);
     printf("Found %d instances of the pattern.\n", patterns_found);
 
@@ -36,6 +41,24 @@ int main(int argc, char *argv[]) {
 
     // start 2nd pass
     printf("\nPass 2\n");
+    fp = fopen(filename, "w");
+    fprintf(fp, "%s", pattern);
+
+    // find size of file
+    fseek(fp, 0, SEEK_END);
+    int size = ftell(fp);
+    fseek(fp, 0, SEEK_SET);
+
+    printf("File size: %d bytes\n", size);
+    fclose(fp);
+
+    // do mmap
+    fd = open(filename, O_RDWR);
+
+    fileregion = mmap(0, size, PROT_WRITE, MAP_SHARED, fd, 0);  
+    printf("File MMAP'd to: %.x\n", (unsigned int) fileregion);
+      
+    
     // patterns_found = findpattern(pattern, patlength, locations, loclength);
     patterns_found = findpattern(pattern, patlength, locations, loclength);
     printf("Found %d instances of the pattern.\n", patterns_found);

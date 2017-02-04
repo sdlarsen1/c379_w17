@@ -28,7 +28,17 @@ int main(int argc, char *argv[]) {
 
     patterns_found = findpattern(pattern, patlength, locations, loclength);
     printf("Found %d instances of the pattern.\n", patterns_found);
-    
+   
+    for (loc = locations, i = 0; i < MIN(loclength, patterns_found); i++, loc++)
+    {
+	printf("Pattern found at %.8x, ", loc->location);
+	if (loc->mode == 0)
+		printf("Mode: MEM_RW\n");
+	else
+		printf("Mode: MEM_RO\n");
+    }
+
+
     // make changes
     char *new_instance = malloc(patlength + 1);
     strcpy(new_instance, pattern);
