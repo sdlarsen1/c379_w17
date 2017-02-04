@@ -14,8 +14,9 @@
 #endif
 
 
-int call_fp(char *pattern, int patlength,
+int call_findpattern(char *pattern, int patlength,
     struct patmatch *locations, int loclength) {
+        
     char *new_instance = pattern;
     char *new_instance2 = pattern;
 
@@ -46,7 +47,7 @@ int main(int argc, char *argv[]) {
     // start 2nd pass
     printf("\nPass 2\n");
     // patterns_found = findpattern(pattern, patlength, locations, loclength);
-    patterns_found = call_fp(pattern, patlength, locations, loclength);
+    patterns_found = call_findpattern(pattern, patlength, locations, loclength);
     printf("Found %d instances of the pattern.\n", patterns_found);
 
     // print out where we found the pattern.
@@ -56,7 +57,7 @@ int main(int argc, char *argv[]) {
             printf("Mode: MEM_RW\n");
         } else {
             printf("Mode: MEM_RO\n");
-        a}
+        }
     }
     printf("pattern length: %d\n", patlength);
 
