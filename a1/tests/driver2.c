@@ -12,6 +12,7 @@
 #ifndef p
 #define p ""
 #endif
+#define MAXPATTERNSIZE 20000
 
 /*
 int call_findpattern(char *pattern, int patlength,
@@ -33,13 +34,20 @@ int call_findpattern(char *pattern, int patlength,
 int main(int argc, char *argv[]) {
 
     char *pattern = STRINGIFY(p);
-    char new_instance[100] = {0};
-    char new_instance2[100] = {0};
+    char new_instance[MAXPATTERNSIZE] = {0};
+    char new_instance2[MAXPATTERNSIZE] = {0};
 
     int loclength = 16, patlength, patterns_found, i;
     struct patmatch *locations = malloc(sizeof(struct patmatch) * loclength);
     struct patmatch *loc;
     patlength = strlen(pattern);
+
+    if (patlength > MAXPATTERNSIZE)
+    {
+	printf("Pattern larger than MAXPATTERNSIZE, you can edit the macro in driver2.c\n");
+	exit(0);
+    }
+
     printf("\n\n----< Test2 >----\n\n");
     printf("Memory modified on the stack using local variables\n");
     printf("The pattern is: %s\n\n", pattern);

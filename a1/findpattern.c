@@ -38,17 +38,23 @@ unsigned int findpattern(unsigned char *pattern,
   	BYTE test, mode = 0;
   	unsigned int num_patterns_found = 0;
 
-
+	// save old signal handler
+	struct sigaction oldSigSegV;
+	if(sigaction(SIGSEGV, NULL, &oldSigSegV) < 0)
+  	{
+    	        perror("ERROR: saving old sigsegv handler\n");
+ 	           exit(1);
+ 	}
 
     	struct sigaction saSigSegV;     // set up out signal handler
     	saSigSegV.sa_sigaction = (segfault_handler);
-   	 saSigSegV.sa_flags = SA_RESTART | SA_SIGINFO | SA_RESETHAND;
+   	saSigSegV.sa_flags = SA_RESTART | SA_SIGINFO | SA_RESETHAND;
 
-   	 if(sigaction(SIGSEGV, &saSigSegV, NULL) < 0)
-  	  {
+   	if(sigaction(SIGSEGV, &saSigSegV, NULL) < 0)
+  	{
     	        perror("ERROR: registering SigFault_Handler\n");
  	           exit(1);
- 	   }
+ 	}
 
 	for ( page_ptr = (void *) (unsigned long) 0; 
 			(unsigned long) page_ptr < MAX_ADDRESS - getpagesize();
@@ -123,6 +129,11 @@ unsigned int findpattern(unsigned char *pattern,
 		}
 
 	}
+	if(sigaction(SIGSEGV, &oldSigSegV, NULL) < 0)
+    	{
+            perror("ERROR: restoring old signal handler\n");
+            exit(1);
+    	}
 
 	return num_patterns_found;
 }
