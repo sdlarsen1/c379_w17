@@ -11,7 +11,7 @@ all:
 	./test3 >> test_results.txt
 
 clean:
-	rm -rf *.o ./test1 ./test2 ./test3 test_results.txt driver3file
+	rm -rf *.o test1 test2 test3 test_results.txt driver3file
 
 test1:  driver1.o findpattern.o
 	$(CC) $(FLAGS) driver1.o findpattern.o -o test1

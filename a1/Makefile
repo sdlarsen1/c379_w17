@@ -1,40 +1,25 @@
-CC = gcc
-FLAGS = -m32
-SETPAT = -Dp=$(p)
 TEST_DIR = tests
 
-.PHONY: tests
+.PHONY: test1 test2 test3
 
-# This is the Makefile for the entire project. To make the programs in
-# /tests run: make tests 
+# This is the top-level Makefile for assignment 1.
+
+# To compile all test programs, enter: make p=<pattern>
+# To compile individual tests, enter: make test<#> p=<pattern>
+# To clean all created files from /tests, enter: make clean
 
 all:
-	make test1 test2 test3
+	$(MAKE) -C $(TEST_DIR)
 
-test1:  driver1.o findpattern.o
-	$(CC) $(FLAGS) driver1.o findpattern.o -o test1
+test1:
+	$(MAKE) -C $(TEST_DIR) p=$(p) test1
 
-test2:  driver2.o findpattern.o
-	$(CC) $(FLAGS) driver1.o findpattern.o -o test2
+test2:
+	$(MAKE) -C $(TEST_DIR) p=$(p) test2
 
-test3:  driver3.o findpattern.o
-	$(CC) $(FLAGS) driver1.o findpattern.o -o test3
+test3:
+	$(MAKE) -C $(TEST_DIR) p=$(p) test2
 
-driver1.o: findpattern.o driver1.c
-	$(CC) -c $(FLAGS) $(SETPAT) driver1.c
-
-driver2.o: findpattern.o driver2.c
-	$(CC) -c $(FLAGS) $(SETPAT) driver2.c
-
-driver3.o: findpattern.o driver3.c
-	$(CC) -c $(FLAGS) $(SETPAT) driver3.c
-
-findpattern.o: findpattern.c findpattern.h
-	$(CC) -c $(FLAGS) findpattern.c
-
-tests:
-	$(MAKE) -C $(TEST_DIR) make
 
 clean:
 	$(MAKE) -C $(TEST_DIR) clean
-	rm -rf *.o *.out test1 test2 test3
