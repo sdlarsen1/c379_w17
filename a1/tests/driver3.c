@@ -30,7 +30,7 @@ int main(int argc, char *argv[]) {
 
     printf("\n\n----< Test3 >----\n\n");
     printf("Memory modified using mmap / mprotect().\n");
-    printf("The pattern is: %s\n", pattern);
+    printf("The pattern is: %s\n\n", pattern);
 
     printf("Pass 1\n");
   

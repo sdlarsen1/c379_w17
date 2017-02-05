@@ -23,7 +23,7 @@ int main(int argc, char *argv[]) {
 
     printf("\n\n----< Test1 >----\n\n");
     printf("Memory modified on the heap using malloc()\n");
-    printf("The pattern is: %s\n", pattern);
+    printf("The pattern is: %s\n\n", pattern);
 
     printf("Pass 1\n");
 

@@ -28,7 +28,7 @@ int main(int argc, char *argv[]) {
     struct patmatch *loc;
     patlength = strlen(pattern);
 
-    printf("Test 3\n");
+    printf("\n\n----< Test3 >----\n\n");
     printf("Memory modified using mmap / mprotect().\n");
     printf("The pattern is: %s\n", pattern);
 
