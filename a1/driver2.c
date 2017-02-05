@@ -13,18 +13,13 @@
 #define P ""
 #endif
 
-
+/*
 int call_findpattern(char *pattern, int patlength,
     struct patmatch *locations, int loclength) {
 
-    char new_instance[100] = {0};
-    char new_instance2[100] = {0};
+    
 
-    strcpy(new_instance, pattern);
-    printf("New instance of pattern at %.x\n", (unsigned int) new_instance);
 
-    strcpy(new_instance2, pattern);
-    printf("New instance of pattern at %.x\n", (unsigned int) new_instance2);
 
 
    // *new_instance = *pattern;
@@ -33,18 +28,23 @@ int call_findpattern(char *pattern, int patlength,
     int patterns_found = findpattern(pattern, patlength, locations, loclength);
     return patterns_found;
 }
-
+*/
 
 int main(int argc, char *argv[]) {
 
     char *pattern = STRINGIFY(P);
+    char new_instance[100] = {0};
+    char new_instance2[100] = {0};
+
     int loclength = 16, patlength, patterns_found, i;
     struct patmatch *locations = malloc(sizeof(struct patmatch) * loclength);
     struct patmatch *loc;
     patlength = strlen(pattern);
     printf("Test2\n");
     printf("Memory modified on the stack using local variables\n");
-    printf("The pattern is: %s", pattern);
+    printf("The pattern is: %s\n", pattern);
+
+    printf("'Pattern var at %.8x'\n", (unsigned int) pattern);
 
     printf("\nPass 1\n");
  
@@ -60,11 +60,16 @@ int main(int argc, char *argv[]) {
         }
     }
 
+    strcpy(new_instance, pattern);
+    printf("\nNew instance of pattern put at %.x\n", (unsigned int) new_instance);
+
+    strcpy(new_instance2, pattern);
+    printf("New instance of pattern put at %.x\n", (unsigned int) new_instance2);
 
     // start 2nd pass
     printf("\nPass 2\n");
     // patterns_found = findpattern(pattern, patlength, locations, loclength);
-    patterns_found = call_findpattern(pattern, patlength, locations, loclength);
+    patterns_found = findpattern(pattern, patlength, locations, loclength);
     printf("Found %d instances of the pattern.\n", patterns_found);
 
     // print out where we found the pattern.
