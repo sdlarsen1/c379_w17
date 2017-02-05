@@ -14,22 +14,6 @@
 #endif
 #define MAXPATTERNSIZE 20000
 
-/*
-int call_findpattern(char *pattern, int patlength,
-    struct patmatch *locations, int loclength) {
-
-    
-
-
-
-
-   // *new_instance = *pattern;
-    //*new_instance2 = *pattern;
-
-    int patterns_found = findpattern(pattern, patlength, locations, loclength);
-    return patterns_found;
-}
-*/
 
 int main(int argc, char *argv[]) {
 
@@ -66,14 +50,16 @@ int main(int argc, char *argv[]) {
         }
     }
 
+
+    // start 2nd pass
+    printf("\nPass 2\n");
+    // make changes
     strcpy(new_instance, pattern);
     printf("\nNew instance of pattern put at %.x\n", (unsigned int) new_instance);
 
     strcpy(new_instance2, pattern);
-    printf("New instance of pattern put at %.x\n", (unsigned int) new_instance2);
+    printf("New instance of pattern put at %.x\n\n", (unsigned int) new_instance2);
 
-    // start 2nd pass
-    printf("\nPass 2\n");
     // patterns_found = findpattern(pattern, patlength, locations, loclength);
     patterns_found = findpattern(pattern, patlength, locations, loclength);
     printf("Found %d instances of the pattern.\n", patterns_found);

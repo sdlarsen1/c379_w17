@@ -65,7 +65,7 @@ int main(int argc, char *argv[]) {
     fd = open(filename, O_RDWR);
 
     fileregion = mmap(0, size, PROT_WRITE, MAP_SHARED, fd, 0);  
-    printf("File MMAP'd to: %.x\n", (unsigned int) fileregion);
+    printf("File MMAP'd to: %.x\n\n", (unsigned int) fileregion);
       
     
     // patterns_found = findpattern(pattern, patlength, locations, loclength);
@@ -86,7 +86,7 @@ int main(int argc, char *argv[]) {
 
     mprotect(fileregion, size, PROT_READ);
     printf("\nPass 3\n");
-    printf("MMAP'd memory at %.x set to read-only.\n", (unsigned int) fileregion);
+    printf("MMAP'd memory at %.x set to read-only.\n\n", (unsigned int) fileregion);
 
     patterns_found = findpattern(pattern, patlength, locations, loclength);
     printf("Found %d instances of the pattern.\n", patterns_found);

@@ -38,14 +38,13 @@ int main(int argc, char *argv[]) {
 	else
 		printf("Mode: MEM_RO\n");
     }
-
+ 
+    printf("\nPass 2\n");
 
     // make changes
     char *new_instance = malloc(patlength + 1);
     strcpy(new_instance, pattern);
-    printf("New instance of pattern at %.x\n", (unsigned int) new_instance);
-    
-    printf("Pass 2\n");
+    printf("New instance of pattern put at %.x\n\n", (unsigned int) new_instance);
     patterns_found = findpattern(pattern, patlength, locations, loclength);
     printf("Found %d instances of the pattern.\n", patterns_found);
 
