@@ -6,7 +6,7 @@ SETPAT = -Dp=$(p)
 
 all:
 	make test1 test2 test3
-	./test1 >> test_results.txt
+	./test1 > test_results.txt
 	./test2 >> test_results.txt
 	./test3 >> test_results.txt
 
