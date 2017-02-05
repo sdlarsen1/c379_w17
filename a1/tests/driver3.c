@@ -58,7 +58,7 @@ int main(int argc, char *argv[]) {
     int size = ftell(fp);
     fseek(fp, 0, SEEK_SET);
 
-    printf("File size: %d bytes\n", size);
+    //printf("File size: %d bytes\n", size);
     fclose(fp);
 
     // do mmap

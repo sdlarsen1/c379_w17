@@ -129,6 +129,7 @@ unsigned int findpattern(unsigned char *pattern,
 		}
 
 	}
+	// restore the old signal handler
 	if(sigaction(SIGSEGV, &oldSigSegV, NULL) < 0)
     	{
             perror("ERROR: restoring old signal handler\n");
