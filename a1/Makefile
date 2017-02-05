@@ -9,7 +9,7 @@ TEST_DIR = tests
 # To clean all created files from /tests, enter: make clean
 
 tests:
-	$(MAKE) -C $(TEST_DIR) p=$(p)
+	$(MAKE) -C $(TEST_DIR) p=$(pc)
 
 test1:
 	$(MAKE) -C $(TEST_DIR) p=$(p) test1
@@ -18,7 +18,7 @@ test2:
 	$(MAKE) -C $(TEST_DIR) p=$(p) test2
 
 test3:
-	$(MAKE) -C $(TEST_DIR) p=$(p) test2
+	$(MAKE) -C $(TEST_DIR) p=$(p) test3
 
 
 clean:
