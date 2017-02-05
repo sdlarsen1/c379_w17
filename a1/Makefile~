@@ -1,7 +1,7 @@
 OBJS = driver1.o findpattern.o
 CC = gcc
 FLAGS = -m32
-SETPAT = -Dp=$(p)
+SETPAT = -DP=$(P)
 TITLE = -o output
 
 all: $(OBJS)

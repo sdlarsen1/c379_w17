@@ -2,9 +2,7 @@
 #include <stdlib.h>
 #include "findpattern.h"
 #include <string.h>
-#include <sys/mman.h>
-#include <sys/stat.h>
-#include <fcntl.h>
+
 
 #define MIN(x, y) (((x) < (y)) ? (x) : (y))
 
@@ -12,53 +10,64 @@
 #define STRINGIFY(s) XSTRINGIFY(s)
 #define XSTRINGIFY(s) #s
 #ifndef P
-#define P ""
+#define p ""
 #endif
 
+/*
+int call_findpattern(char *pattern, int patlength,
+    struct patmatch *locations, int loclength) {
+
+    
+
+
+
+
+   // *new_instance = *pattern;
+    //*new_instance2 = *pattern;
+
+    int patterns_found = findpattern(pattern, patlength, locations, loclength);
+    return patterns_found;
+}
+*/
 
 int main(int argc, char *argv[]) {
 
-    char *pattern = STRINGIFY(P);
-    char *filename = "driver3file";
-    FILE *fp;
-    int fd;
-    void *fileregion;
+    char *pattern = STRINGIFY(p);
+    char new_instance[100] = {0};
+    char new_instance2[100] = {0};
+
     int loclength = 16, patlength, patterns_found, i;
     struct patmatch *locations = malloc(sizeof(struct patmatch) * loclength);
     struct patmatch *loc;
     patlength = strlen(pattern);
+    printf("Test2\n");
+    printf("Memory modified on the stack using local variables\n");
+    printf("The pattern is: %s\n", pattern);
 
-    printf("Test 3\n");
-    printf("Memory modified using mmap().\n");
-    printf("The pattern is: %s", pattern);
+    printf("Pattern is stored at %.8x\n", (unsigned int) pattern);
 
     printf("\nPass 1\n");
-  
+ 
     patterns_found = findpattern(pattern, patlength, locations, loclength);
     printf("Found %d instances of the pattern.\n", patterns_found);
+    // print out where we found the pattern.
+    for (loc = locations, i = 0; i < MIN(loclength, patterns_found); i++, loc++) {
+        printf("Pattern found at %.8x, ", loc->location);
+        if (loc->mode == 0) {
+            printf("Mode: MEM_RW\n");
+        } else {
+            printf("Mode: MEM_RO\n");
+        }
+    }
 
+    strcpy(new_instance, pattern);
+    printf("\nNew instance of pattern put at %.x\n", (unsigned int) new_instance);
 
+    strcpy(new_instance2, pattern);
+    printf("New instance of pattern put at %.x\n", (unsigned int) new_instance2);
 
     // start 2nd pass
     printf("\nPass 2\n");
-    fp = fopen(filename, "w");
-    fprintf(fp, "%s", pattern);
-
-    // find size of file
-    fseek(fp, 0, SEEK_END);
-    int size = ftell(fp);
-    fseek(fp, 0, SEEK_SET);
-
-    printf("File size: %d bytes\n", size);
-    fclose(fp);
-
-    // do mmap
-    fd = open(filename, O_RDWR);
-
-    fileregion = mmap(0, size, PROT_WRITE, MAP_SHARED, fd, 0);  
-    printf("File MMAP'd to: %.x\n", (unsigned int) fileregion);
-      
-    
     // patterns_found = findpattern(pattern, patlength, locations, loclength);
     patterns_found = findpattern(pattern, patlength, locations, loclength);
     printf("Found %d instances of the pattern.\n", patterns_found);
@@ -72,7 +81,6 @@ int main(int argc, char *argv[]) {
             printf("Mode: MEM_RO\n");
         }
     }
-    printf("pattern length: %d\n", patlength);
 
     return 0;
 }

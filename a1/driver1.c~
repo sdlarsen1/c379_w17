@@ -9,13 +9,13 @@
 // https://gcc.gnu.org/onlinedocs/cpp/Stringification.html
 #define STRINGIFY(s) XSTRINGIFY(s)
 #define XSTRINGIFY(s) #s
-#ifndef P
-#define P ""
+#ifndef p
+#define p ""
 #endif
 
 int main(int argc, char *argv[]) {
 
-    char *pattern = STRINGIFY(P);
+    char *pattern = STRINGIFY(p);
     int loclength = 16, patlength, patterns_found, i;
     struct patmatch *locations = malloc(sizeof(struct patmatch) * loclength);
     struct patmatch *loc;
@@ -23,6 +23,7 @@ int main(int argc, char *argv[]) {
 
     printf("Test1\n");
     printf("Memory modified on the heap using malloc()\n");
+    printf("The pattern is: %s\n", pattern);
 
     printf("Pass 1\n");
 
@@ -58,7 +59,6 @@ int main(int argc, char *argv[]) {
 		printf("Mode: MEM_RO\n");
     }
     free(new_instance);
-    printf("pattern length: %d\n", patlength);
     
     exit(0);	
 }
