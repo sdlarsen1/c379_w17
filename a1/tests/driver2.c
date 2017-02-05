@@ -42,11 +42,9 @@ int main(int argc, char *argv[]) {
     patlength = strlen(pattern);
     printf("\n\n----< Test2 >----\n\n");
     printf("Memory modified on the stack using local variables\n");
-    printf("The pattern is: %s\n", pattern);
+    printf("The pattern is: %s\n\n", pattern);
 
-    printf("Pattern is stored at %.8x\n", (unsigned int) pattern);
-
-    printf("\nPass 1\n");
+    printf("Pass 1\n");
  
     patterns_found = findpattern(pattern, patlength, locations, loclength);
     printf("Found %d instances of the pattern.\n", patterns_found);
