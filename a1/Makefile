@@ -5,6 +5,9 @@ TEST_DIR = tests
 
 .PHONY: tests
 
+# This is the Makefile for the entire project. To make the programs in
+# /tests run: make tests 
+
 all:
 	make test1 test2 test3
 

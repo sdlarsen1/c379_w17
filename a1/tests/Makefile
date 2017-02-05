@@ -2,6 +2,8 @@ CC = gcc
 FLAGS = -m32
 SETPAT = -Dp=$(p)
 
+# This is the Makefile for the /tests subdirectory
+
 all:
 	make test1 test2 test3
 	./test1 >> test_results.txt
