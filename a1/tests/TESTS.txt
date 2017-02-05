@@ -1,0 +1,20 @@
+Driver1
+This driver makes a pass through memory, then mallocs space for a new instance
+of the pattern on the heap and uses strcpy() to copy the pattern into the new
+instance. On the second pass of findpattern(), there should be on extra result
+in comparison to the first pass, and its address should indicate that it is on
+the heap.
+
+Driver2
+Before the first pass through memory, this driver declares two 0-initialized
+char arrays. After the first pass, the driver uses strcpy() to copy the pattern
+into the new arrays and after the second call to findpattern(), it should find
+two new instances of the pattern with addresses indicating that they are on the
+stack.
+
+Driver3
+After the first pass through memory, the driver creates a file named
+'driver3file' and uses mmap() to map it to read/write memory. The driver then
+calls findpattern(), which should find an additional instance of the pattern.
+The driver then uses mprotect() to change the mode at that region from
+read/write to read-only and calls findpattern() to display proof of the change.

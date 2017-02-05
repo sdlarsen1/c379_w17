@@ -1,6 +1,11 @@
 # Assignment 1
 
-This is the folder for CMPUT 379 - Assignment 1
+This is the folder for CMPUT 379 - Assignment 1, Created by Stephen Larsen & Hayden Bauder
+
+All driver files are in the /tests sub-directory along with its own Makefile and README, named TESTS.txt.
+
+The top-level Makefile calls commands in the sub-level Makefile and has more specific documentation within the comments. It is recommended to run ```make clean``` before testing with a new pattern.
+
 
 ## License
 ```
