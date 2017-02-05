@@ -7,6 +7,7 @@ TEST_DIR = tests
 # To compile all test programs, enter: make p=<pattern>
 # To compile individual tests, enter: make test<#> p=<pattern>
 # To clean all created files from /tests, enter: make clean
+# Before changing testing patterns, ensure to run make clean.
 
 tests:
 	$(MAKE) -C $(TEST_DIR) p=$(p)
