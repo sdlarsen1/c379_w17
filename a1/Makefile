@@ -10,7 +10,7 @@ TEST_DIR = tests
 # Before changing testing patterns, ensure to run make clean.
 
 tests:
-	$(MAKE) -C $(TEST_DIR) p=$(pc)
+	$(MAKE) -C $(TEST_DIR) p=$(p)
 
 test1:
 	$(MAKE) -C $(TEST_DIR) p=$(p) test1
