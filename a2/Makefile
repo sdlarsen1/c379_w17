@@ -10,11 +10,11 @@ client: client.o
 server: server.o
 	$(CC) $(FLAGS) server.o -o server
 
-server.o: client.c
-	$(CC) -c $(FLAGS) client.c
-
-client.o: server.c
+server.o: server.c
 	$(CC) -c $(FLAGS) server.c
+
+client.o: client.c
+	$(CC) -c $(FLAGS) client.c
 
 clean:
 	rm -rf server client *.o
