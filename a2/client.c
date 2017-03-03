@@ -14,7 +14,7 @@
  the server need not run on the same machine.
  --------------------------------------------------------------------- */
 
-int main()
+int main(int argc, char *argv[])
 {
 	int	s, number;
 
@@ -22,7 +22,12 @@ int main()
 
 	struct	hostent		*host;
 
-	host = gethostbyname ("localhost");
+	if (argc == 1) {
+		printf("No host specified, quitting\n");
+		exit(0);
+	}
+
+	host = gethostbyname (argv[1]);
 
 	if (host == NULL) {
 		perror ("Client: cannot get host description");
