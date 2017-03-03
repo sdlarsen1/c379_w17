@@ -19,15 +19,26 @@ int main(int argc, char *argv[])
 	int	s, number;
 
 	struct	sockaddr_in	server;
-
+	struct  in_addr		ip;
 	struct	hostent		*host;
+
+	char * ipstr;
 
 	if (argc == 1) {
 		printf("No host specified, quitting\n");
 		exit(0);
 	}
 
-	host = gethostbyname (argv[1]);
+	ipstr = argv[1];
+
+	if (!inet_aton(ipstr, &ip))
+	{
+		printf("Cant read IP\n");
+		exit(0);
+	}
+
+	host = gethostbyaddr ((const void *) &ip, sizeof(ip), AF_INET);
+	printf("Trying to connect to %s ...\n", argv[1]);
 
 	if (host == NULL) {
 		perror ("Client: cannot get host description");

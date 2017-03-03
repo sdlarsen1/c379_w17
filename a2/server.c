@@ -44,6 +44,7 @@ int main()
 	while (1) {
 		fromlength = sizeof (from);
 		snew = accept (sock, (struct sockaddr*) & from, & fromlength);
+		printf("a\n");
 		if (snew < 0) {
 			perror ("Server: accept failed");
 			exit (1);
