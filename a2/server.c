@@ -4,6 +4,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <string.h>
+#include <strings.h>
+#include "connection.h"
 
 #define	MY_PORT	2222
 
@@ -15,12 +18,16 @@
  chines.
  --------------------------------------------------------------------- */
 
+
+
 int main()
 {
 	int	sock, snew, fromlength, number, outnum;
 
 	struct	sockaddr_in	master, from;
 
+	char	in_buffer[512];
+	char	out_buffer[512];
 
 	sock = socket (AF_INET, SOCK_STREAM, 0);
 	if (sock < 0) {
@@ -44,13 +51,14 @@ int main()
 	while (1) {
 		fromlength = sizeof (from);
 		snew = accept (sock, (struct sockaddr*) & from, & fromlength);
-		printf("a\n");
+		printf("Connection accepted\n");
 		if (snew < 0) {
 			perror ("Server: accept failed");
 			exit (1);
 		}
 		outnum = htonl (number);
-		write (snew, &outnum, sizeof (outnum));
+		send_buffer(snew, "aaaabbbbccccddddeeee\n", strlen("aaaabbbbccccddddeeee\n"));
+		//write (snew, &outnum, sizeof (outnum));
 		close (snew);
 		number++;
 	}

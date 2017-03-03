@@ -5,9 +5,12 @@
 #include <netdb.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <strings.h>
+#include "connection.h"
 
-#define	 MY_PORT  2222
+#define	MY_PORT  2222
+#define BUFFER_LEN 1024
 
 /* ---------------------------------------------------------------------
  This is a sample client program for the number server. The client and
@@ -22,7 +25,9 @@ int main(int argc, char *argv[])
 	struct  in_addr		ip;
 	struct	hostent		*host;
 
-	char * ipstr;
+	char 	*ipstr;
+	char	in_buffer[BUFFER_LEN];
+	char	out_buffer[BUFFER_LEN];
 
 	if (argc == 1) {
 		printf("No host specified, quitting\n");
@@ -38,6 +43,7 @@ int main(int argc, char *argv[])
 	}
 
 	host = gethostbyaddr ((const void *) &ip, sizeof(ip), AF_INET);
+
 	printf("Trying to connect to %s ...\n", argv[1]);
 
 	if (host == NULL) {
@@ -55,19 +61,22 @@ int main(int argc, char *argv[])
 		}
 
 		bzero (&server, sizeof (server));
-		bcopy (host->h_addr, & (server.sin_addr), host->h_length);
+		bcopy (host->h_addr, &(server.sin_addr), host->h_length);
 		server.sin_family = host->h_addrtype;
 		server.sin_port = htons (MY_PORT);
+
+		//printf("ip addr: %s\n server addr: %s\n", host.h_addr, server.sin_addr)
 
 		if (connect (s, (struct sockaddr*) & server, sizeof (server))) {
 			perror ("Client: cannot connect to server");
 			exit (1);
 		}
 
-		read (s, &number, sizeof (number));
+		// read (s, &number, sizeof (number));
+		read_buffer(s, in_buffer, BUFFER_LEN);
 		close (s);
-		fprintf (stderr, "Process %d gets number %d\n", getpid (),
-			ntohl (number));
+		fprintf (stderr, "Process %d gets string %s\n", getpid (),
+			in_buffer);
 		sleep (2);
 	}
 }
