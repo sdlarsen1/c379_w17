@@ -9,7 +9,7 @@
 //#include "connection.h"
 
 #define	MY_PORT	2222
-
+#define BUFFER_LEN 512
 /* ---------------------------------------------------------------------
  This	is  a sample server which opens a stream socket and then awaits
  requests coming from client processes. In response for a request, the
@@ -26,8 +26,8 @@ int main()
 
 	struct	sockaddr_in	master, from;
 
-	char	in_buffer[512];
-	char	out_buffer[512];
+	char	in_buffer[BUFFER_LEN];
+	char	out_buffer[BUFFER_LEN];
 
 	const char * welcomeString = "\nWelcome to 379 whiteboard!\n";
 
@@ -65,9 +65,12 @@ int main()
 		// Spawn a thread for this new client
 
 		//
-
+		recv(snew, in_buffer, BUFFER_LEN, 0);
+		printf("%s\n", in_buffer);
 
 		close (snew);
+		printf("Connection closed\n");
 		// number++;
+
 	}
 }
