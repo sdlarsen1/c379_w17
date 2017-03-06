@@ -8,7 +8,7 @@
 #include <string.h>
 #include <strings.h>
 #include "connection.h"
-
+/*
 int send_buffer(int s, char * buffer, int buffer_len)
 {
 	int sent_bytes = 0;
@@ -30,4 +30,4 @@ int read_buffer(int s, char * buffer, int buffer_len)
 		// WILL INFINITE LOOP IF MESSAGE NEVER COMPLETED
 		read_bytes += read(s, &buffer[read_bytes], buffer_len - read_bytes);
 	}
-}
+}*/

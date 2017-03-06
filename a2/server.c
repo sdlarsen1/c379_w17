@@ -57,8 +57,8 @@ int main()
 			exit (1);
 		}
 		outnum = htonl (number);
-		send_buffer(snew, "aaaabbbbccccddddeeee\n", strlen("aaaabbbbccccddddeeee\n"));
-		//write (snew, &outnum, sizeof (outnum));
+		//send(snew, "aaaabbbbccccddddeeee\n", strlen("aaaabbbbccccddddeeee\n"));
+		write (snew, & "aaaabbbbccccddddeeee\n", strlen("aaaabbbbccccddddeeee\n"));		//write (snew, &outnum, sizeof (outnum));
 		close (snew);
 		number++;
 	}

@@ -19,7 +19,7 @@
 
 int main(int argc, char *argv[])
 {
-	int	s, number;
+	int	s, number, got;
 
 	struct	sockaddr_in	server;
 	struct  in_addr		ip;
@@ -73,8 +73,9 @@ int main(int argc, char *argv[])
 		}
 
 		// read (s, &number, sizeof (number));
-		read_buffer(s, in_buffer, BUFFER_LEN);
+		got = read(s, in_buffer, BUFFER_LEN);
 		close (s);
+		printf("got %d bytes\n", got);
 		fprintf (stderr, "Process %d gets string %s\n", getpid (),
 			in_buffer);
 		sleep (2);
