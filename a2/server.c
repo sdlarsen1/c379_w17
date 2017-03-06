@@ -29,6 +29,8 @@ int main()
 	char	in_buffer[512];
 	char	out_buffer[512];
 
+	const char * welcomeString = "\nWelcome to 379 whiteboard!\n";
+
 	sock = socket (AF_INET, SOCK_STREAM, 0);
 	if (sock < 0) {
 		perror ("Server: cannot open master socket");
@@ -56,10 +58,16 @@ int main()
 			perror ("Server: accept failed");
 			exit (1);
 		}
-		outnum = htonl (number);
-		//send(snew, "aaaabbbbccccddddeeee\n", strlen("aaaabbbbccccddddeeee\n"));
-		write (snew, & "aaaabbbbccccddddeeee\n", strlen("aaaabbbbccccddddeeee\n"));		//write (snew, &outnum, sizeof (outnum));
+		//outnum = htonl (number);
+		
+		write (snew, welcomeString, strlen(welcomeString) - 1);
+
+		// Spawn a thread for this new client
+
+		//
+
+
 		close (snew);
-		number++;
+		// number++;
 	}
 }
