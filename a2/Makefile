@@ -1,5 +1,5 @@
 CC = gcc
-FLAGS = -m32
+FLAGS = -m32 -pthread
 
 all:
 	make client server

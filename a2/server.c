@@ -6,7 +6,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <strings.h>
-#include "connection.h"
+//#include "connection.h"
 
 #define	MY_PORT	2222
 
@@ -60,7 +60,7 @@ int main()
 		}
 		//outnum = htonl (number);
 		
-		write (snew, welcomeString, strlen(welcomeString) - 1);
+		send(snew, welcomeString, strlen(welcomeString) + 1, 0);
 
 		// Spawn a thread for this new client
 

@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <strings.h>
-#include "connection.h"
+//#include "connection.h"
 
 #define	MY_PORT  2222
 #define BUFFER_LEN 1024
@@ -51,33 +51,30 @@ int main(int argc, char *argv[])
 		exit (1);
 	}
 
-	while (1) {
+	
 
-		s = socket (AF_INET, SOCK_STREAM, 0);
+	s = socket (AF_INET, SOCK_STREAM, 0);
 
-		if (s < 0) {
-			perror ("Client: cannot open socket");
-			exit (1);
-		}
-
-		bzero (&server, sizeof (server));
-		bcopy (host->h_addr, &(server.sin_addr), host->h_length);
-		server.sin_family = host->h_addrtype;
-		server.sin_port = htons (MY_PORT);
-
-		//printf("ip addr: %s\n server addr: %s\n", host.h_addr, server.sin_addr)
-
-		if (connect (s, (struct sockaddr*) & server, sizeof (server))) {
-			perror ("Client: cannot connect to server");
-			exit (1);
-		}
-
-		// read (s, &number, sizeof (number));
-		got = read(s, in_buffer, BUFFER_LEN);
-		close (s);
-		printf("got %d bytes\n", got);
-		fprintf (stderr, "Process %d gets string %s\n", getpid (),
-			in_buffer);
-		sleep (2);
+	if (s < 0) {		
+		perror ("Client: cannot open socket");
+		exit (1);
 	}
+
+	bzero (&server, sizeof (server));
+	bcopy (host->h_addr, &(server.sin_addr), host->h_length);
+	server.sin_family = host->h_addrtype;
+	server.sin_port = htons (MY_PORT);
+
+	if (connect (s, (struct sockaddr*) & server, sizeof (server))) {
+		perror ("Client: cannot connect to server");
+		exit (1);
+	}
+	// read (s, &number, sizeof (number));
+	got = recv(s, in_buffer, BUFFER_LEN, 0);
+	close (s);
+	//printf("got %d bytes\n", got);
+	//fprintf (stderr, "Process %d gets string %s\n", getpid (), in_buffer);
+	fprintf (stdout, "%s", in_buffer);
+	
+	// make new connection with new thread
 }
