@@ -29,6 +29,8 @@ Tips:
 	- specify input in README
 */
 
+// persistent connections, server itself is a daemon
+
 
 int main()
 {
