@@ -18,6 +18,16 @@
  chines.
  --------------------------------------------------------------------- */
 
+/*
+Tips:
+	- each client/connection has its own thread
+	- all threads share the same globals (ie. the whiteboard and mutex), each thread gets its own stack
+	- mutex isn't the whiteboard itself, separate variable/array/file/etc.
+	- server only shuts down after given SIGTERM
+	- basic error handling (index out of range, syntax, etc.)
+	- server may run with statefile to preserve data after crash (statefile going to be used to test servers)
+	- specify input in README
+*/
 
 
 int main()
@@ -59,7 +69,7 @@ int main()
 			exit (1);
 		}
 		//outnum = htonl (number);
-		
+
 		send(snew, welcomeString, strlen(welcomeString) + 1, 0);
 
 		// Spawn a thread for this new client
