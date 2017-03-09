@@ -71,13 +71,15 @@ int main(int argc, char *argv[])
 			perror ("Client: cannot connect to server");
 			exit (1);
 		}
-		printf("tried to connect");
+		//printf("tried to connect");
 		// read (s, &number, sizeof (number));
 		got = recv(s, in_buffer, BUFFER_LEN, 0);
 
 		//printf("got %d bytes\n", got);
 		//fprintf (stderr, "Process %d gets string %s\n", getpid (), in_buffer);
 		fprintf (stdout, "%s", in_buffer);
+
+		// Should enter a command loop here
 		printf("~>");
 		scanf("%s", out_buffer);
 		send(s, &out_buffer, strlen(out_buffer), 0);
