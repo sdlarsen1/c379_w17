@@ -39,6 +39,8 @@ Tips:
 // GLOBALS
 
 char whiteboard[WB_NUM_ENTRIES][WB_ENTRY_SIZE] = {0};
+int is_encrypted[WB_NUM_ENTRIES] = {0};	// 0 = unencrypted, 1 = encrypted
+int entry_len[WB_NUM_ENTRIES] = {0};
 
 pthread_t threads[MAX_THREADS];
 
@@ -62,6 +64,12 @@ int parse_cmd(char * cmd, char * type, int * entry, int * len, char **text)
 	c = cmd;
 	c++;	// skip first char
 
+	if (!isdigit(*c))
+	{
+		// invalid command
+		return -1;
+	}
+
 	*entry = atoi(c); // what entry does the command concern?
 
 
@@ -69,16 +77,26 @@ int parse_cmd(char * cmd, char * type, int * entry, int * len, char **text)
 	{
 		c++;
 	}
-
+	
 	*type = *c;	// plain text or cipher?
 
-	if (*type == '\n')
+	if (cmd[0] == '?')
 	{
 		// This is a query
 		return 0;
 	}
-
+	
+	else if ((*type != 'p') && (*type) != 'e')
+	{
+		// invalid command
+		return -1;
+	}
 	c++;
+
+	if (!isdigit(*c))
+	{
+		return -1;
+	}
 
 	*len = atoi(c);
 
@@ -95,19 +113,28 @@ int parse_cmd(char * cmd, char * type, int * entry, int * len, char **text)
 
 int handle_command(char * cmd, char * buffer)
 {
-	int entry, len, pretext_len;
-	char type, tmp[64] = {0};
+	int entry, len, valid;
+	char type,  tmp[64] = {0};
 	char * text;
-	char * test = "?12p16\nthisisawritetest\n";
-	parse_cmd(test, &type, &entry, &len, &text);
+	const char * err_noentry = "No Such Entry";
+	const char * err_unknown_cmd = "Unknown Command";
+	const char * err_toolong	= "Entry Too Long";
 
-	printf("type == %c\nentry == %d\nlen == %d\ntext == %c\n", 
-					type, entry, len, *text);
-	if (entry >= WB_NUM_ENTRIES)
+	valid = parse_cmd(cmd, &type, &entry, &len, &text);
+
+	// start at entry 1
+
+	if (valid < 0)
+	{
+		//unknown command
+		sprintf(buffer, "!0e%d\n%s\n", strlen(err_unknown_cmd), err_unknown_cmd);
+		return 0;
+	}
+
+	else if ((entry > WB_NUM_ENTRIES) || (entry <= 0))
 	{
 		// no such entry!
-		const char * err_noentry = "No Such Entry";
-		strcat(buffer, "!");
+				strcat(buffer, "!");
 		sprintf(tmp, "%d", entry);
 		strcat(buffer, tmp);
 		strcat(buffer, "e");
@@ -115,23 +142,59 @@ int handle_command(char * cmd, char * buffer)
 		strcat(buffer, tmp);
 		strcat(buffer, "\n");
 		strcat(buffer, err_noentry);
-		strcat(buffer, "\n");
+		strcat(buffer, "\n\0");
+		printf("%s", buffer);
 	}
 
-	if (cmd[0] == '?')
+	else if (cmd[0] == '?')
 	{
+		printf("query\n");
 		// query the whiteboard
-		;
+		// -- start critical section --
+		pthread_mutex_lock(&mutex);
+
+		if (is_encrypted[entry - 1] == 0)
+			type = 'p';
+		else
+			type = 'c';
+
+		len = entry_len[entry - 1];
+		sprintf(buffer, "!%d%c%d\n%s\n", entry, type, len, whiteboard[entry - 1]);
+
+		pthread_mutex_unlock(&mutex);
+		// -- exit critical section --
 	}
+
 	else if (cmd[0] == '@')
 	{
 		// update the whiteboard
-		;
-	}
-	else
-	{
-		//unknown command
-		;
+		printf("update\n");
+		if (len > (WB_ENTRY_SIZE - 1))
+		{
+			sprintf(buffer, "!%de%d\n%s\n", entry, 
+					strlen(err_toolong), err_toolong);
+
+			return 0;
+		}
+
+		// -- start critical section --
+		pthread_mutex_lock(&mutex);
+
+		memcpy(&(whiteboard[entry - 1]), text, len);
+		whiteboard[entry - 1][len] = '\0';		
+
+		entry_len[entry - 1] = len;
+
+		if (type == 'p')
+			is_encrypted[entry - 1] = 0;
+		else
+			is_encrypted[entry - 1] = 1;
+
+		pthread_mutex_unlock(&mutex);
+		// -- exit critical section -- 
+
+		sprintf(buffer, "!%de0\n\n", entry);
+
 	}
 
 	return 0;
@@ -167,13 +230,13 @@ int main()
 	}
 
 	listen (sock, 5);
-	handle_command("test\n", out_buffer);
+	
 	while (1) {
 		fromlength = sizeof (from);
 
 		snew = accept (sock, (struct sockaddr*) & from, & fromlength);
 
-		printf("Connection accepted\n");
+		//printf("Connection accepted\n");
 		if (snew < 0) {
 			perror ("Server: accept failed");
 			exit (1);
@@ -187,9 +250,13 @@ int main()
 		//
 
 		recv(snew, in_buffer, BUFFER_LEN, 0);
-		printf("%s\n", in_buffer);
+		printf("'%s'\n", in_buffer);
+
+		handle_command(in_buffer, out_buffer);
+
+		printf("%s", out_buffer);
 
 		close (snew);
-		printf("Connection closed\n");
+		//printf("Connection closed\n");
 	}
 }
