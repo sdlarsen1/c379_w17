@@ -82,7 +82,7 @@ int main(int argc, char *argv[])
 		// Should enter a command loop here
 		printf("~>");
 		scanf("%s", out_buffer);
-		send(s, &out_buffer, strlen(out_buffer), 0);
+		send(s, &out_buffer, strlen(out_buffer) + 1, 0);
 		recv(s, in_buffer, BUFFER_LEN, 0);
 		fprintf (stdout, "%s", in_buffer);
 

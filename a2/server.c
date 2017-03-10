@@ -7,6 +7,7 @@
 #include <string.h>
 #include <strings.h>
 #include <pthread.h>
+#include <ctype.h>
 
 #define	MY_PORT	2222
 #define BUFFER_LEN 512
@@ -41,22 +42,76 @@ char whiteboard[WB_NUM_ENTRIES][WB_ENTRY_SIZE] = {0};
 
 pthread_t threads[MAX_THREADS];
 
-
+pthread_mutex_t mutex;
 
 // Function prototypes
 void * handle_client(void * arg);
 
-int handle_command(char * cmd);
+int handle_command(char * cmd, char * buffer);
 
-int parse_entry(char * cmd);
+int parse_cmd(char * cmd, char * type, int * entry, int * len, char **text);
 
+int generate_message(int status, int entry, int length, char * buffer);
 
 // Function definitions
-
-int handle_command(char cmd[])
+int generate_message(int status, int entry, int length, char * buffer)
 {
-	int entry, length;
+	;
+}
+
+int parse_cmd(char * cmd, char * type, int * entry, int * len, char **text)
+{
+	char * c;
+
+	c = cmd;
+	c++;	// skip first char
+
+	*entry = atoi(c); // what entry does the command concern?
+
+
+	while (isdigit(*c)) // next field
+	{
+		c++;
+	}
+
+	*type = *c;	// plain text or cipher?
+
+	if (*type == '\n')
+	{
+		// This is a query
+		return 0;
+	}
+
+	c++;
+
+	*len = atoi(c);
+
+	while (isdigit(*c))
+	{
+		c++;
+	}
+	c++;
+
+	*text = c; // pointer to the text segment
+
+	return 0;
+}
+
+int handle_command(char * cmd, char * buffer)
+{
+	int entry, len, pretext_len;
 	char type;
+	char * text;
+	char * test = "?12p16\nthisisawritetest\n";
+	parse_cmd(test, &type, &entry, &len, &text);
+
+	printf("type == %c\nentry == %d\nlen == %d\ntext == %c\n", 
+					type, entry, len, *text);
+	if (entry >= WB_NUM_ENTRIES)
+	{
+		// no such entry!
+		
+	}
 
 	if (cmd[0] == '?')
 	{
@@ -84,11 +139,12 @@ int main()
 
 	struct	sockaddr_in	master, from;
 
-	char	in_buffer[BUFFER_LEN];
-	char	out_buffer[BUFFER_LEN];
+	char	in_buffer[BUFFER_LEN] = {0};
+	char	out_buffer[BUFFER_LEN] = {0};
 
 	const char * welcomeString = "CMPUT379 Whiteboard Server v0\n50\n";
 
+	pthread_mutex_init(&mutex, NULL);
 
 	sock = socket (AF_INET, SOCK_STREAM, 0);
 	if (sock < 0) {
@@ -106,7 +162,7 @@ int main()
 	}
 
 	listen (sock, 5);
-
+	handle_command("test\n", out_buffer);
 	while (1) {
 		fromlength = sizeof (from);
 
