@@ -3,3 +3,8 @@
 ### Code Reuse
 Code taken from
 -  http://stackoverflow.com/questions/9825114/gethostbyaddr-returns-0
+
+### Dev branch
+To access the dev branch, ensure you are on the master branch, then enter:
+
+    `$ git checkout --track origin/dev`
