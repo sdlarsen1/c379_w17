@@ -102,7 +102,7 @@ int main(int argc, char *argv[]) {
 
 	char 		*ipstr;
 	char		in_buffer[BUFFER_LEN];
-	const char	*out_buffer;
+	char	    out_buffer[BUFFER_LEN];
 
 	if (argc == 1) {
 		printf("No host specified, quitting\n");
@@ -151,14 +151,15 @@ int main(int argc, char *argv[]) {
 		recv(s, in_buffer, BUFFER_LEN, 0);
 		fprintf (stdout, "%s", in_buffer);
 
-		out_buffer = get_user_input();
-		printf("Out message is: %s", out_buffer);
+		const char * temp_buff = get_user_input();
+		memcpy(out_buffer, temp_buff, BUFFER_LEN);
 		// printf("~>");
 		// scanf("%s", out_buffer);
 		send(s, out_buffer, strlen(out_buffer), 0);
 		recv(s, in_buffer, BUFFER_LEN, 0);
 		// fprintf (stdout, "%s", in_buffer);
 		close(s);
+		memset(out_buffer, 0, BUFFER_LEN);
 	}
 
 	recv(s, in_buffer, BUFFER_LEN, 0);
