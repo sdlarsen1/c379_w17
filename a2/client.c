@@ -9,7 +9,7 @@
 #include <strings.h>
 //#include "connection.h"
 
-#define	MY_PORT  2222
+#define	MY_PORT  2222  // un-hardcode for final delivery
 #define BUFFER_LEN 1024
 #define MESSAGE_LEN 512
 
@@ -125,8 +125,9 @@ int main(int argc, char *argv[]) {
 		exit (1);
 	}
 
-
-
+	/*
+	 This is where the magic happens.
+	*/
 
 	while(1) {
 		s = socket (AF_INET, SOCK_STREAM, 0);
