@@ -145,6 +145,7 @@ int main(int argc, char *argv[]) {
 			perror ("Client: cannot connect to server");
 			exit (1);
 		}
+
 		// printf("tried to connect");
 		// read (s, &number, sizeof (number));
 		recv(s, in_buffer, BUFFER_LEN, 0);
