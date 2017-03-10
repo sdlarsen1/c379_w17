@@ -35,7 +35,7 @@ const char *get_user_input() {
 		printf("Do you wish to use encryption?\n(1) Yes \n(2) No\n>");
 		scanf("%s", crypt);
 
-		printf("What is you update message?\n>");
+		printf("What is your update message?\n>");
 		scanf("%s", msg);
 
 		// flush somewhere in here?
@@ -146,18 +146,15 @@ int main(int argc, char *argv[]) {
 			exit (1);
 		}
 
-		// printf("tried to connect");
-		// read (s, &number, sizeof (number));
 		recv(s, in_buffer, BUFFER_LEN, 0);
 		fprintf (stdout, "%s", in_buffer);
 
 		const char * temp_buff = get_user_input();
 		memcpy(out_buffer, temp_buff, BUFFER_LEN);
-		// printf("~>");
-		// scanf("%s", out_buffer);
+
 		send(s, out_buffer, strlen(out_buffer), 0);
 		recv(s, in_buffer, BUFFER_LEN, 0);
-		// fprintf (stdout, "%s", in_buffer);
+
 		close(s);
 		memset(out_buffer, 0, BUFFER_LEN);
 	}
