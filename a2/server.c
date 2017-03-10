@@ -54,10 +54,6 @@ int parse_cmd(char * cmd, char * type, int * entry, int * len, char **text);
 int generate_message(int status, int entry, int length, char * buffer);
 
 // Function definitions
-int generate_message(int status, int entry, int length, char * buffer)
-{
-	;
-}
 
 int parse_cmd(char * cmd, char * type, int * entry, int * len, char **text)
 {
@@ -100,7 +96,7 @@ int parse_cmd(char * cmd, char * type, int * entry, int * len, char **text)
 int handle_command(char * cmd, char * buffer)
 {
 	int entry, len, pretext_len;
-	char type;
+	char type, tmp[64] = {0};
 	char * text;
 	char * test = "?12p16\nthisisawritetest\n";
 	parse_cmd(test, &type, &entry, &len, &text);
@@ -110,7 +106,16 @@ int handle_command(char * cmd, char * buffer)
 	if (entry >= WB_NUM_ENTRIES)
 	{
 		// no such entry!
-		
+		const char * err_noentry = "No Such Entry";
+		strcat(buffer, "!");
+		sprintf(tmp, "%d", entry);
+		strcat(buffer, tmp);
+		strcat(buffer, "e");
+		sprintf(tmp, "%d", strlen(err_noentry));
+		strcat(buffer, tmp);
+		strcat(buffer, "\n");
+		strcat(buffer, err_noentry);
+		strcat(buffer, "\n");
 	}
 
 	if (cmd[0] == '?')
