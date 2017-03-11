@@ -30,6 +30,7 @@ const char * do_decrypt(char * in_msg) {
     int outlen, delen;
     static unsigned char out_msg[MESSAGE_LEN];
     unsigned char *base64_decoded = base64decode(in_msg, bytes_to_decode);   //Base-64 decoding.
+    printf("After base64decoding: %s\n", base64_decoded);
     unsigned char key[] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
     unsigned char iv[] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
     EVP_CIPHER_CTX ctx;
