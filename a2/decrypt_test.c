@@ -26,9 +26,9 @@ char *base64decode (const void *b64_decode_this, int decode_this_many_bytes){
 
 const char * do_decrypt(char * in_msg) {
 
-    int bytes_to_decode = strlen(in_msg); //Number of bytes in string to base64 decode.
     int outlen, delen;
     static unsigned char out_msg[MESSAGE_LEN];
+    int bytes_to_decode = strlen(in_msg); //Number of bytes in string to base64 decode.
     unsigned char *base64_decoded = base64decode(in_msg, bytes_to_decode);   //Base-64 decoding.
     printf("After base64decoding: %s\n", base64_decoded);
     unsigned char key[] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
@@ -42,6 +42,7 @@ const char * do_decrypt(char * in_msg) {
     EVP_DecryptInit_ex(&ctx, EVP_aes_256_cbc(), NULL, key, iv);
     if(!EVP_DecryptUpdate(&ctx, out_msg, &delen, base64_decoded, outlen)) {
         /* Error */
+        printf("Error during decryption.\n");
         return 0;
     }
 
@@ -51,6 +52,7 @@ const char * do_decrypt(char * in_msg) {
     int remainingBytes;
     if(!EVP_DecryptFinal_ex(&ctx, out_msg + delen, &remainingBytes)) {
         /* Error */
+        printf("Error while decrypting the final block.\n");
         return 0;
     }
 
