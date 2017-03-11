@@ -46,6 +46,8 @@ char *base64decode (const void *b64_decode_this, int decode_this_many_bytes){
 const char * do_decrypt(char * in_msg) {
 
     int bytes_to_decode = strlen(in_msg); //Number of bytes in string to base64 decode.
+    int outlen, delen;
+    char debuf[BUFFER_LEN];
     unsigned char *base64_decoded = base64decode(in_msg, bytes_to_decode);   //Base-64 decoding.
     unsigned char key[] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
     unsigned char iv[] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
