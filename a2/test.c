@@ -84,6 +84,8 @@ const char * do_crypt(char *in_msg) {
     // char *in_msg = "some Crypto Text";
     EVP_CIPHER_CTX ctx;
 
+    printf("Before encryption, in_msg = %s\n", in_msg);
+
     EVP_CIPHER_CTX_init(&ctx);
     EVP_EncryptInit_ex(&ctx, EVP_aes_256_cbc(), NULL, key, iv);
 
@@ -104,7 +106,7 @@ const char * do_crypt(char *in_msg) {
 
     outlen += tmplen;
     EVP_CIPHER_CTX_cleanup(&ctx);
-
+    printf("After encryption, out_msg = %s\n", out_msg);
 	return base64encode(out_msg, outlen);
 }
 
