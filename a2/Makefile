@@ -16,8 +16,8 @@ server.o: server.c
 client.o: client.c
 	$(CC) -c $(FLAGS) client.c
 
-encryption.o: encryption.c
-	$(CC) -c $(FLAGS) encryption.c
+encryption.o: encryption.c encryption.h
+	$(CC) -c $(FLAGS) encryption.c encryption.h
 
 clean:
 	rm -rf server client *.o
