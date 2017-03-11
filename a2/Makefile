@@ -5,10 +5,10 @@ all:
 	make client server
 
 client: client.o
-	$(CC) $(FLAGS) client.o -o client
+	$(CC) $(FLAGS) client.o -o wbc379
 
 server: server.o
-	$(CC) $(FLAGS) server.o -o server
+	$(CC) $(FLAGS) server.o -o wbs379
 
 server.o: server.c
 	$(CC) -c $(FLAGS) server.c 
