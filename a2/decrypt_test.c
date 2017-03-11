@@ -60,7 +60,7 @@ const char * do_decrypt(char * in_msg) {
     delen += remainingBytes;
     EVP_CIPHER_CTX_cleanup(&ctx);
 
-    printf("%s", out_msg);
+    printf("After decryption: %s\n", out_msg);
 }
 
 int main() {
