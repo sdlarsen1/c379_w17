@@ -60,10 +60,10 @@ const char * do_decrypt(char * in_msg) {
     delen += remainingBytes;
     EVP_CIPHER_CTX_cleanup(&ctx);
 
-    return out_msg;
+    printf("%s", out_msg);
 }
 
 int main() {
     char in_msg[] = "jYlayYIhOsJhfITqO9iLtQ==";
-    printf("%s", do_decrypt(in_msg));
+    do_decrypt(in_msg);
 }
