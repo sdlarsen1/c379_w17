@@ -72,7 +72,7 @@ const char * do_decrypt(char * in_msg) {
     delen += remainingBytes;
     EVP_CIPHER_CTX_cleanup(&ctx);
 
-    return out_msg, delen;
+    return out_msg;
 }
 
 const char * do_crypt(char *in_msg) {
