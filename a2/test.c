@@ -153,9 +153,6 @@ const char * prepare_statement(char type, char *entry, char crypt, char *msg) {
 	return out_message;
 }
 
-const char * encrypt_msg(char *msg) {
-	return 0;
-}
 
 int main() {
 	char type;
