@@ -47,7 +47,7 @@ const char * do_decrypt(char * in_msg) {
 
     int bytes_to_decode = strlen(in_msg); //Number of bytes in string to base64 decode.
     int outlen, delen;
-    char debuf[BUFFER_LEN];
+    static unsigned char out_msg[BUFFER_LEN];
     unsigned char *base64_decoded = base64decode(in_msg, bytes_to_decode);   //Base-64 decoding.
     unsigned char key[] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
     unsigned char iv[] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
@@ -58,13 +58,13 @@ const char * do_decrypt(char * in_msg) {
 
     EVP_CIPHER_CTX_init(&ctx);
     EVP_DecryptInit_ex(&ctx, EVP_aes_256_cbc(), NULL, key, iv);
-    if(!EVP_DecryptUpdate(&ctx, debuf, &delen, base64_decoded, outlen)) {
+    if(!EVP_DecryptUpdate(&ctx, out_msg, &delen, base64_decoded, outlen)) {
         /* Error */
         return 0;
     }
 
     int remainingBytes;
-    if(!EVP_DecryptFinal_ex(&ctx, debuf + delen, &remainingBytes)) {
+    if(!EVP_DecryptFinal_ex(&ctx, out_msg + delen, &remainingBytes)) {
         /* Error */
         return 0;
     }
@@ -72,7 +72,7 @@ const char * do_decrypt(char * in_msg) {
     delen += remainingBytes;
     EVP_CIPHER_CTX_cleanup(&ctx);
 
-    return base64_decoded, delen;
+    return out_msg, delen;
 }
 
 const char * do_crypt(char *in_msg) {
