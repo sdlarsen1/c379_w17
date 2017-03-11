@@ -38,10 +38,8 @@ const char *get_user_input() {
 		printf("What is your update message?\n>");
 		scanf("%s", msg);
 
-		// flush somewhere in here?
-
 		if (crypt[0] == '1') {
-			// crypto_msg = encrypt_msg(msg);
+			crypto_msg = do_crypt(msg);
 			return prepare_statement(type[0], entry, crypt[0], msg);  // FIX THIS AFTER ENCRYPTION
 		} else {
 			return prepare_statement(type[0], entry, crypt[0], msg);
