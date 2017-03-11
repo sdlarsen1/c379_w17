@@ -13,7 +13,7 @@ server: server.o
 server.o: server.c
 	$(CC) -c $(FLAGS) server.c
 
-client.o: client.c encryption.o
+client.o: client.c
 	$(CC) -c $(FLAGS) client.c
 
 encryption.o: encryption.c encryption.h

@@ -1,3 +1,8 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <openssl/evp.h>
+#include <openssl/pem.h>
 #include "encryption.h"
 
 #define MESSAGE_LEN 512
