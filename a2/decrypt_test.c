@@ -27,7 +27,7 @@ char *base64decode (const void *b64_decode_this, int decode_this_many_bytes){
 const char * do_decrypt(char * in_msg) {
 
     int outlen, delen;
-    static unsigned char out_msg[MESSAGE_LEN];
+    static unsigned char out_msg[MESSAGE_LEN], out_buff[MESSAGE_LEN];
     int bytes_to_decode = strlen(in_msg); //Number of bytes in string to base64 decode.
     unsigned char *base64_decoded = base64decode(in_msg, bytes_to_decode);   //Base-64 decoding.
     printf("After base64decoding: %s\n", base64_decoded);
@@ -40,7 +40,7 @@ const char * do_decrypt(char * in_msg) {
 
     EVP_CIPHER_CTX_init(&ctx);
     EVP_DecryptInit_ex(&ctx, EVP_aes_256_cbc(), NULL, key, iv);
-    if(!EVP_DecryptUpdate(&ctx, out_msg, &delen, base64_decoded, outlen)) {
+    if(!EVP_DecryptUpdate(&ctx, out_buff, &delen, base64_decoded, outlen)) {
         /* Error */
         printf("Error during decryption.\n");
         return 0;
@@ -50,7 +50,7 @@ const char * do_decrypt(char * in_msg) {
     printf("After DecryptUpdate, delen = %d\n\n",delen);
 
     int remainingBytes;
-    if(!EVP_DecryptFinal_ex(&ctx, out_msg + delen, &remainingBytes)) {
+    if(!EVP_DecryptFinal_ex(&ctx, out_buff + delen, &remainingBytes)) {
         /* Error */
         printf("Error while decrypting the final block.\n");
         return 0;
@@ -61,6 +61,8 @@ const char * do_decrypt(char * in_msg) {
 
     delen += remainingBytes;
     EVP_CIPHER_CTX_cleanup(&ctx);
+
+    strcpy(out_msg, out_buff, delen);
 
     printf("After decryption: %s\n", out_msg);
 }

@@ -158,7 +158,7 @@ int main() {
 	char type;
 	char crypt[2];
 	char entry[4];
-	char msg[] = "The name's Bond, James Bond.";
+	char msg[MESSAGE_LEN];
 	char *crypto_msg;
 
 	printf("What type of query do you wish to make?\n(1) GET\n(2) POST\n>");
@@ -171,8 +171,8 @@ int main() {
 		printf("Do you wish to use encryption?\n(1) Yes \n(2) No\n>");
 		scanf("%s", crypt);
 
-		// printf("What is you update message?\n>");
-		// scanf("%s", msg);
+		printf("What is you update message?\n>");
+		scanf("%s", msg);
 
 		if (crypt[0] == '1') {
 			crypto_msg = do_crypt(msg);
