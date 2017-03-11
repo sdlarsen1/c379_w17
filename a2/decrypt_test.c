@@ -66,6 +66,6 @@ const char * do_decrypt(char * in_msg) {
 }
 
 int main() {
-    char in_msg[] = "jYlayYIhOsJhfITqO9iLtQ==";
+    char in_msg[] = "kPnQZQVkVmsS2fCfUJY6rxS3bRnqlyr9OSqVuLEb3gU=";
     do_decrypt(in_msg);
 }

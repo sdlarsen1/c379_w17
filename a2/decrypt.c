@@ -88,6 +88,8 @@ int do_crypt()
     int bytes_to_encode = outlen; //Number of bytes in string to base64 encode.
     unsigned char *base64_encoded = base64encode(data_to_encode, bytes_to_encode);   //Base-64 encoding.
 
+    printf("Base64 encoding: %s", base64_encoded);
+
     int bytes_to_decode = strlen(base64_encoded); //Number of bytes in string to base64 decode.
     unsigned char *base64_decoded = base64decode(base64_encoded, bytes_to_decode);   //Base-64 decoding.
 
