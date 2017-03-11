@@ -44,11 +44,17 @@ const char * do_decrypt(char * in_msg) {
         return 0;
     }
 
+    printf("** calling EVP_DecryptUpdate(&ctx, debuf, &delen, base64_decoded, outlen)\n");
+    printf("After DecryptUpdate, delen = %d\n\n",delen);
+
     int remainingBytes;
     if(!EVP_DecryptFinal_ex(&ctx, out_msg + delen, &remainingBytes)) {
         /* Error */
         return 0;
     }
+
+    printf("** calling EVP_DecryptFinal_ex(&ctx, debuf + delen, &remainingBytes)\n");
+    printf("After DecryptFinal, delen = %d, remainingBytes = %d\n",delen, remainingBytes);
 
     delen += remainingBytes;
     EVP_CIPHER_CTX_cleanup(&ctx);
