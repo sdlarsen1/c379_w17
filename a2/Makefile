@@ -4,8 +4,8 @@ FLAGS = -m32 -pthread -lcrypto
 all:
 	make client server
 
-client: client.o encryption.o
-	$(CC) $(FLAGS) client.o encryption.o -o client
+client: client.o
+	$(CC) $(FLAGS) client.o -o client
 
 server: server.o
 	$(CC) $(FLAGS) server.o -o server
@@ -15,9 +15,6 @@ server.o: server.c
 
 client.o: client.c
 	$(CC) -c $(FLAGS) client.c
-
-encryption.o: encryption.c encryption.h
-	$(CC) -c $(FLAGS) encryption.c
 
 clean:
 	rm -rf server client *.o
