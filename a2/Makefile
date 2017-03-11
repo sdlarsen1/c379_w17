@@ -1,11 +1,11 @@
 CC = gcc
-FLAGS = -m32 -pthread -lcrypto
+FLAGS = -m32 -pthread
 
 all:
 	make client server
 
-client: client.o
-	$(CC) $(FLAGS) client.o -o client
+client: client.o encryption.o
+	$(CC) $(FLAGS) client.o encryption.o -lcrypto -o client
 
 server: server.o
 	$(CC) $(FLAGS) server.o -o server
@@ -15,6 +15,9 @@ server.o: server.c
 
 client.o: client.c
 	$(CC) -c $(FLAGS) client.c
+
+encryption.o: encryption.c encryption.h
+	$(CC) -c encryption.c -lcrypto
 
 clean:
 	rm -rf server client *.o
