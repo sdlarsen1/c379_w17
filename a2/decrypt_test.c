@@ -35,7 +35,7 @@ const char * do_decrypt(char * in_msg) {
     EVP_CIPHER_CTX ctx;
 
     outlen = strlen(base64_decoded);
-    free(in_msg);                //Frees up the memory holding our base64 encoded data.
+    // free(in_msg);                //Frees up the memory holding our base64 encoded data.
 
     EVP_CIPHER_CTX_init(&ctx);
     EVP_DecryptInit_ex(&ctx, EVP_aes_256_cbc(), NULL, key, iv);
