@@ -7,7 +7,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <strings.h>
-//#include "connection.h"
 
 #define	MY_PORT  2222
 #define BUFFER_LEN 1024
