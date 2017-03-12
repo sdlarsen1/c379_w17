@@ -9,7 +9,10 @@
 #define BUFFER_LEN 1024
 #define MESSAGE_LEN 512
 
-
+/*
+    Code taken from
+    http://stackoverflow.com/questions/22863977/dynamically-allocated-2d-array-of-strings-from-file
+*/
 char ** get_keys(FILE* keyfile, int *count) {
     char** array = NULL;        /* Array of lines */
     int    i;                   /* Loop counter */
@@ -84,6 +87,7 @@ const char * do_decrypt(char * in_msg, char *encoded_key) {
     EVP_CIPHER_CTX ctx;
 
     // Decode the key
+    printf("This is the encoded key: %s\n", encoded_key);
     key = base64decode(encoded_key, strlen(encoded_key));
 
     int bytes_to_decode = strlen(in_msg);  // Number of bytes in string to base64 decode.
@@ -127,7 +131,7 @@ void get_server_response(char * in_buffer, char **keys, int *line_count) {
         if (pch[0] == '!') {  // Deal with header
             printf("Header: %s\n", pch);
 
-            c = strchr(pch, 'c');  // index the e, set encryption status is exists
+            c = strchr(pch, 'c');  // index the c, set encryption status is exists
             if (c) { is_encrypted = true; }
 
         } else if (is_encrypted) {
@@ -137,7 +141,7 @@ void get_server_response(char * in_buffer, char **keys, int *line_count) {
 
             printf("Trying first key...\n");
             int i;
-            for (i = 0; i < *line_count; i++) {
+            for (i = 0; i < *line_count; i++) {  // try each key, break on success
                 msg = do_decrypt(pch, keys[i]);
                 if (!msg) {
                     printf("Trying new key...\n");
