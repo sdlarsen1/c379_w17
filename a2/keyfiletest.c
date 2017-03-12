@@ -58,7 +58,7 @@ const char * do_crypt_new(char *in_msg, char *encoded_key) {
     // decode the key
     key = base64decode(encoded_key, strlen(encoded_key));
 
-    printf("Before encryption, in_msg = %s\n", in_msg);
+    //printf("Before encryption, in_msg = %s\n", in_msg);
 
     EVP_CIPHER_CTX_init(&ctx);
     EVP_EncryptInit_ex(&ctx, EVP_aes_256_cbc(), NULL, key, iv);
@@ -80,7 +80,7 @@ const char * do_crypt_new(char *in_msg, char *encoded_key) {
 
     outlen += tmplen;
     EVP_CIPHER_CTX_cleanup(&ctx);
-    printf("After encryption, out_msg = %s\n", base64encode(out_msg, outlen));
+    //printf("After encryption, out_msg = %s\n", base64encode(out_msg, outlen));
 	return base64encode(out_msg, outlen);
 }
 
@@ -92,6 +92,6 @@ int main() {
     printf("Message being encrypted: %s\n", msg);
     crypto_msg = do_crypt_new(msg, file_key);
     printf("After encryption: %s\n", crypto_msg);
-    printf("After decryption: %s\n", do_decrypt_new(msg, file_key));
+    printf("After decryption: %s\n", do_decrypt_new(crypto_msg, file_key));
 
 }
