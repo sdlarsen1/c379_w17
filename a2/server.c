@@ -42,9 +42,11 @@ char **whiteboard;	// array of pointers to strings, init in main
 int *is_encrypted;
 int *entry_len;
 
-pthread_t threads[MAX_THREADS];
+//pthread_t threads[MAX_THREADS];
+//int thread_free[MAX_THREADS] = {0};
 
 pthread_mutex_t mutex;
+pthread_mutex_t log_mutex;
 
 FILE * logfp = NULL;
 
@@ -60,6 +62,8 @@ int parse_cmd(char * cmd, char * type, int * entry, int * len, char **text);
 int count_entries(FILE * file);
 
 void loadcmd(char * buffer, FILE * statefile);
+
+int getfreethread(void);
 
 int main(int argc, char * argv[])
 {
@@ -108,7 +112,7 @@ int main(int argc, char * argv[])
     	} */
 
 	close(STDIN_FILENO);
-    	close(STDOUT_FILENO);
+    	//close(STDOUT_FILENO);
     	close(STDERR_FILENO);
 
 	signal(SIGTERM,sigterm_handler);
@@ -117,7 +121,8 @@ int main(int argc, char * argv[])
 
 
 	// declare vars
-	int	sock, snew, fromlength, i, statefileflag = 0, portnum;
+	int	sock, snew, fromlength, i, statefileflag = 0, portnum, th;
+	pthread_t newthread;
 
 	struct	sockaddr_in	master, from;
 
@@ -131,6 +136,7 @@ int main(int argc, char * argv[])
 	FILE * statefile;
 
 	pthread_mutex_init(&mutex, NULL);
+	pthread_mutex_init(&log_mutex, NULL);
 
 	portnum = atoi(argv[1]);
 
@@ -144,7 +150,7 @@ int main(int argc, char * argv[])
 
 			if ((NUM_ENTRIES > 10000) || (NUM_ENTRIES < 1))
 			{
-				fprintf(logfp, "Error: number of entries must be between 1 and %d", MAX_ENTRIES);
+				fprintf(logfp, "Error: number of entries must be between 1 and %d", 												MAX_ENTRIES);
 				fclose(logfp);
 				exit(0);
 			}
@@ -229,7 +235,7 @@ int main(int argc, char * argv[])
 			//logfp = fopen("server.log", "w+");
 			//if (logfp)
 			//	exit(1);
-
+			pthread_mutex_lock(&log_mutex);
 			fprintf(logfp, "Server: accept failed");
 
 			fclose(logfp);			
@@ -239,29 +245,72 @@ int main(int argc, char * argv[])
 		//Send the welcome message to the new client
 		send(snew, welcomeString, strlen(welcomeString) + 1, 0);
 		// Spawn a thread for this new client
-		
+		//th = getfreethread();
+	
+		pthread_create(&newthread, NULL, handle_client, (void *) &snew);
+		pthread_mutex_lock(&log_mutex);
+		fprintf(logfp, "created new thread: %d\n", (int) (unsigned long) newthread);
+		pthread_mutex_unlock(&log_mutex);				
 
 		//
 
-		recv(snew, in_buffer, BUFFER_LEN, 0);
-		fprintf(logfp, "received '%s'\n", in_buffer);
+		//recv(snew, in_buffer, BUFFER_LEN, 0);
+		//fprintf(logfp, "received '%s'\n", in_buffer);
 
-		handle_command(in_buffer, out_buffer);
+		//handle_command(in_buffer, out_buffer);
 
-		fprintf(logfp, "response '%s'\n", out_buffer);
-		send(snew, out_buffer, strlen(out_buffer)+ 1, 0);
-		close (snew);
+		//fprintf(logfp, "response '%s'\n", out_buffer);
+		//send(snew, out_buffer, strlen(out_buffer)+ 1, 0);
+		//close (snew);
 
-		fflush(logfp);
+		//fflush(logfp);
 		//printf("Connection closed\n");
 	}
 }
 
 // Function definitions
+void * handle_client(void * arg)
+{
+	int socket = *(int *) arg;
+	char	in_buffer[BUFFER_LEN] = {0};
+	char	out_buffer[BUFFER_LEN] = {0};
+
+	// enter command loop
+	while (recv(socket, in_buffer, BUFFER_LEN, 0) > 0)
+	{
+		printf("%s\n", in_buffer);
+		handle_command(in_buffer, out_buffer);
+		send(socket, out_buffer, strlen(out_buffer)+ 1, 0);
+	}
+
+	close(socket);
+
+	// free the thread
+	pthread_mutex_lock(&log_mutex);
+	fprintf(logfp, "thread closed: %d\n", (int) (unsigned long)  pthread_self());
+	pthread_mutex_unlock(&log_mutex);
+
+	pthread_exit(0);
+}
+
+/*
+int getfreethread(void)
+{
+	int i;
+	for (i = 0; i < MAX_THREADS; i++)
+	{
+		if (thread_free[i] == 0)
+			return i;	// index of a free thread
+	}
+
+	return -1;
+}
+*/
+
 void sigterm_handler(int sig){
 	fprintf(logfp, "received SIGTERM\n");
 	
-
+	pthread_mutex_lock(&log_mutex);
 	int i;
 	FILE * statefile;
 	char query[16], output[2 * WB_ENTRY_SIZE];
