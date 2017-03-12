@@ -140,7 +140,7 @@ void get_server_response(char * in_buffer, char **keys, int *line_count) {
             bool decrypted = false;
 
             printf("Trying first key...\n");
-            
+
             int i;
             for (i = 0; i < *line_count; i++) {  // try each key, break on success
                 msg = do_decrypt(pch, keys[i]);
@@ -167,7 +167,7 @@ void get_server_response(char * in_buffer, char **keys, int *line_count) {
 
 int main(int argc, char* argv[]) {
     char response1[] = "!12p30\nthisisaresponsetodemothelength\n";
-    char response2[] = "!14c44\nGMVZ0Bdr7x9fF1XUNyj4gFUKsHwd4SWF57LUUJXyQ9U=\n";
+    char response2[] = "!14c44\nIxcc5ITu3R5vg87Ev5NaFGnztc7omkh23usg7KbJJ1hPeLvRoOYzf0X9P5MFKDuW\n";
 
     int line_count;
     char *filename = argv[1];
