@@ -40,13 +40,17 @@ char *base64decode (const void *b64_decode_this, int decode_this_many_bytes){
 }
 
 
-const char * do_decrypt(char * in_msg) {
+const char * do_decrypt(char * in_msg, char *encoded_key) {
 
     int outlen, delen;
     static unsigned char out_msg[MESSAGE_LEN], out_buff[MESSAGE_LEN];
-    unsigned char key[] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
+    // unsigned char key[] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
     unsigned char iv[] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
+    unsigned char *key;
     EVP_CIPHER_CTX ctx;
+
+    // Decode the key
+    key = base64decode(encoded_key, strlen(encoded_key));
 
     int bytes_to_decode = strlen(in_msg);  // Number of bytes in string to base64 decode.
     unsigned char *base64_decoded = base64decode(in_msg, bytes_to_decode);   // Base-64 decoding.
@@ -77,16 +81,19 @@ const char * do_decrypt(char * in_msg) {
 }
 
 
-const char * do_crypt(char *in_msg) {
+const char * do_crypt(char *in_msg, char *encoded_key) {
 
     static unsigned char out_msg[MESSAGE_LEN];
     int outlen, tmplen, i;
-    unsigned char key[] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
+    // unsigned char key[] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
     unsigned char iv[] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
-    // char *in_msg = "some Crypto Text";
+    unsigned char *key;
     EVP_CIPHER_CTX ctx;
 
-    printf("Before encryption, in_msg = %s\n", in_msg);
+    // decode the key
+    key = base64decode(encoded_key, strlen(encoded_key));
+
+    //printf("Before encryption, in_msg = %s\n", in_msg);
 
     EVP_CIPHER_CTX_init(&ctx);
     EVP_EncryptInit_ex(&ctx, EVP_aes_256_cbc(), NULL, key, iv);
@@ -108,6 +115,6 @@ const char * do_crypt(char *in_msg) {
 
     outlen += tmplen;
     EVP_CIPHER_CTX_cleanup(&ctx);
-    printf("After encryption, out_msg = %s\n", base64encode(out_msg, outlen));
+    //printf("After encryption, out_msg = %s\n", base64encode(out_msg, outlen));
 	return base64encode(out_msg, outlen);
 }

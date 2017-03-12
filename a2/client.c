@@ -10,7 +10,6 @@
 #include <stdbool.h>
 #include "encryption.h"
 
-#define	MY_PORT  2222
 #define BUFFER_LEN 1024
 #define MESSAGE_LEN 512
 
@@ -129,22 +128,35 @@ const char *prepare_statement(char type, char *entry, char crypt, char *msg) {
 
 
 int main(int argc, char *argv[]) {
-	int	s, number, got;
+	int	s, number, got, port;
 
 	struct	sockaddr_in	server;
 	struct  in_addr		ip;
 	struct	hostent		*host;
 
-	char 		*ipstr;
+	char 		*ipstr, *filename;
 	char		in_buffer[BUFFER_LEN];
 	char	    out_buffer[BUFFER_LEN];
 
 	if (argc == 1) {
-		printf("No host specified, quitting\n");
+		printf("Missing args, quitting\n");
 		exit(0);
 	}
 
 	ipstr = argv[1];
+	port = atoi(argv[2]);
+
+	if (argc == 4) {
+		filename = argv[3];
+		FILE* keyfile = fopen(filename, "r");
+		if (keyfile == NULL) {
+        printf("Can't open file %s.\n", filename);
+		exit(0);
+    }
+	} else {
+		printf("WARNING: No keyfile specified -- unable to decrypt encrypted entries.\n")
+	}
+
 
 	if (!inet_aton(ipstr, &ip)) {
 		printf("Can't read IP\n");
@@ -174,7 +186,7 @@ int main(int argc, char *argv[]) {
 		bzero (&server, sizeof (server));
 		bcopy (host->h_addr, &(server.sin_addr), host->h_length);
 		server.sin_family = host->h_addrtype;
-		server.sin_port = htons (MY_PORT);
+		server.sin_port = htons (port);
 
 		if (connect (s, (struct sockaddr*) & server, sizeof (server))) {
 			perror ("Client: cannot connect to server");
