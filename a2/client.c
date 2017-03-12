@@ -140,7 +140,7 @@ const char *get_user_input(char *key) {
 		scanf("%s", crypt);
 
 		printf("What is your update message?\n>");
-		scanf("%s", msg);
+		scanf("%s\n", msg);
 
 		if (crypt[0] == '1') {  // Add encryption macro + encrypt
 			char macro_msg[] = "CMPUT379 Whiteboard Encrypted v0\n";
