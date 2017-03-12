@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <strings.h>
+#include <stdbool.h>
 #include "encryption.h"
 
 #define	MY_PORT  2222
@@ -185,7 +186,7 @@ int main(int argc, char *argv[]) {
 		send(s, out_buffer, strlen(out_buffer), 0);
 
 		recv(s, in_buffer, BUFFER_LEN, 0);
-		get_server_response(in_buffer));
+		get_server_response(in_buffer);
 
 		close(s);
 		memset(out_buffer, 0, BUFFER_LEN);  // Cleare the out buffer
