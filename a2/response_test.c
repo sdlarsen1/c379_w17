@@ -96,6 +96,7 @@ int main() {
     char response2[] = "!17e24\nA2zKAL/RomGTl+/C2iqdbg==\n";
 
     get_server_response(response1);
+    get_server_response(response2);
     // printf("Unecrypted test: %s\n", get_server_response(response1));
     // printf("Encrypted test: %s\n", get_server_response(response2));
 }
