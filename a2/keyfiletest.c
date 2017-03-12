@@ -5,13 +5,17 @@
 #include <openssl/pem.h>
 #include "encryption.h"
 
-const char * do_decrypt_new(char * in_msg, char *key) {
+const char * do_decrypt_new(char * in_msg, char *encoded_key) {
 
     int outlen, delen;
     static unsigned char out_msg[MESSAGE_LEN], out_buff[MESSAGE_LEN];
     // unsigned char key[] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
     unsigned char iv[] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
+    unsigned char *key;
     EVP_CIPHER_CTX ctx;
+
+    // Decode the key
+    key = base64decode(encoded_key, strlen(encoded_key));
 
     int bytes_to_decode = strlen(in_msg);  // Number of bytes in string to base64 decode.
     unsigned char *base64_decoded = base64decode(in_msg, bytes_to_decode);   // Base-64 decoding.
@@ -42,14 +46,17 @@ const char * do_decrypt_new(char * in_msg, char *key) {
 }
 
 
-const char * do_crypt_new(char *in_msg, char *key) {
+const char * do_crypt_new(char *in_msg, char *encoded_key) {
 
     static unsigned char out_msg[MESSAGE_LEN];
     int outlen, tmplen, i;
     // unsigned char key[] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
     unsigned char iv[] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
-    // char *in_msg = "some Crypto Text";
+    unsigned char *key;
     EVP_CIPHER_CTX ctx;
+
+    // decode the key
+    key = base64decode(encoded_key, strlen(encoded_key));
 
     printf("Before encryption, in_msg = %s\n", in_msg);
 
@@ -79,6 +86,12 @@ const char * do_crypt_new(char *in_msg, char *key) {
 
 int main() {
     char file_key[] = "ezAsMSwyLDMsNCw1LDYsNyw4LDksMTAsMTEsMTIsMTMsMTQsMTUsMCwxLDIsMyw0LDUsNiw3LDgsOSwxMCwxMSwxMiwxMywxNCwxNX0=";
-    char *key = base64decode(file_key, strlen(file_key));
-    printf("%s", key);
+    char msg[] = "This is a message to be encrypted.";
+    char *crypto_msg;
+
+    printf("Message being encrypted: %s\n", msg);
+    crypto_msg = do_crypt_new(msg, file_key);
+    printf("After encryption: %s\n", crypto_msg);
+    printf("After decryption: %s\n", do_decrypt_new(msg, file_key));
+
 }
