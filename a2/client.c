@@ -145,6 +145,7 @@ const char *get_user_input(char *key) {
 
 		if (crypt[0] == '1') {  // Add encryption macro + encrypt
 			char *macro_msg = CRYPT_MACRO;
+			printf("This is the macro being used: %s", macro_msg);
 			strcat(macro_msg, msg);
 			printf("This is the message pre_encryption: %s", macro_msg);
 			crypto_msg = do_crypt(macro_msg, key);
