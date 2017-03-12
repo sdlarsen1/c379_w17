@@ -90,6 +90,7 @@ int main() {
     char *crypto_msg;
 
     printf("Message being encrypted: %s\n", msg);
+    printf("This is the key: %s\n", file_key);
     crypto_msg = do_crypt_new(msg, file_key);
     printf("After encryption: %s\n", crypto_msg);
     printf("After decryption: %s\n", do_decrypt_new(crypto_msg, file_key));
