@@ -8,6 +8,7 @@
 #include <strings.h>
 #include <pthread.h>
 #include <ctype.h>
+#include <signal.h>
 
 #define BUFFER_LEN 512
 #define WB_ENTRY_SIZE 1024
@@ -18,7 +19,6 @@
 /*
 	TO DO:
 		Dump statefile on exit
-		Daemonification
 		Multi-threading
 */
 
@@ -46,8 +46,12 @@ pthread_t threads[MAX_THREADS];
 
 pthread_mutex_t mutex;
 
+FILE * logfp = NULL;
+
 // Function prototypes
 void * handle_client(void * arg);
+
+void sigterm_handler(int sig);
 
 int handle_command(char * cmd, char * buffer);
 
@@ -62,7 +66,6 @@ int main(int argc, char * argv[])
 	//-- daemonify --
 	pid_t pid = 0;
     	pid_t sid = 0;
-    	FILE *logfp = NULL;
 
     	pid = fork();
 
@@ -82,6 +85,7 @@ int main(int argc, char * argv[])
     	umask(0);
 
 	// open a log file
+	// logfp is global
     	logfp = fopen ("server.log", "w+");
     	if(!logfp){
     		printf("cannot open log file");
@@ -106,6 +110,8 @@ int main(int argc, char * argv[])
 	close(STDIN_FILENO);
     	close(STDOUT_FILENO);
     	close(STDERR_FILENO);
+
+	signal(SIGTERM,sigterm_handler);
 
 	fprintf(logfp, "server start\n");
 
@@ -252,6 +258,44 @@ int main(int argc, char * argv[])
 }
 
 // Function definitions
+void sigterm_handler(int sig){
+	fprintf(logfp, "received SIGTERM\n");
+	
+
+	int i;
+	FILE * statefile;
+	char query[16], output[2 * WB_ENTRY_SIZE];
+	
+
+	statefile = fopen("whiteboard.all", "w");
+	if (!statefile)
+	{
+		fprintf(logfp, "could not open whiteboard.all, dump failed\n");
+		fclose(logfp);
+		exit(1);
+	}
+
+	// dump to statefile
+	for (i = 0; i < NUM_ENTRIES; i++)
+	{
+		sprintf(query, "?%d", i + 1);
+		handle_command(query, output);
+		fprintf(statefile, "%s", output);
+		free(whiteboard[i]);
+	}
+
+	free(whiteboard);
+	free(is_encrypted);
+	free(entry_len);
+
+	fclose(statefile);
+
+	fprintf(logfp, "dump to statefile success\n");
+	
+	fclose(logfp);
+    	exit(0);
+}
+
 void loadcmd(char * buffer, FILE * statefile)
 {
 	char ch;
