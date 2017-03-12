@@ -280,8 +280,8 @@ void * handle_client(void * arg)
 		printf("%s\n", in_buffer);
 		handle_command(in_buffer, out_buffer);
 		send(socket, out_buffer, strlen(out_buffer)+ 1, 0);
-		memset(in_buffer, 0, BUFFER_LEN);
-		memset(out_buffer, 0, BUFFER_LEN);
+		memset(in_buffer, 0, BUFFER_LEN * sizeof(char));
+		memset(out_buffer, 0, BUFFER_LEN * sizeof(char));
 	}
 
 	close(socket);
@@ -422,7 +422,7 @@ int parse_cmd(char * cmd, char * type, int * entry, int * len, char **text)
 		return 0;
 	}
 	
-	else if ((*type != 'p') && (*type) != 'e')
+	else if ((*type != 'p') && (*type) != 'c')
 	{
 		// invalid command
 		return -1;
