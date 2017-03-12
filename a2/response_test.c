@@ -140,12 +140,12 @@ void get_server_response(char * in_buffer, char **keys, int *line_count) {
             bool decrypted = false;
 
             printf("Trying first key...\n");
+            
             int i;
             for (i = 0; i < *line_count; i++) {  // try each key, break on success
                 msg = do_decrypt(pch, keys[i]);
                 if (!msg) {
                     printf("Trying new key...\n");
-                    printf("%s\n", msg);
                 } else {
                     decrypted = true;
                     break;
