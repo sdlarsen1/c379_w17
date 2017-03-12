@@ -17,6 +17,11 @@ const char *prepare_statement(char type, char *entry, char crypt, char *msg);
 const char *get_user_input();
 
 
+const char *get_server_response(char * in_buffer) {
+	
+}
+
+
 const char *get_user_input() {
 
 	char type[2];
@@ -154,14 +159,15 @@ int main(int argc, char *argv[]) {
 		fprintf (stdout, "%s", in_buffer);
 
 		const char * temp_buff = get_user_input();
-		memcpy(out_buffer, temp_buff, BUFFER_LEN);
+		memcpy(out_buffer, temp_buff, BUFFER_LEN);  // Copy formatted input to the out buffer
 
 		printf("This is the out message: %s",out_buffer);
 		send(s, out_buffer, strlen(out_buffer), 0);
 		recv(s, in_buffer, BUFFER_LEN, 0);
+		printf("Server's response:\n%s\n", get_server_response(in_buffer));
 
 		close(s);
-		memset(out_buffer, 0, BUFFER_LEN);
+		memset(out_buffer, 0, BUFFER_LEN);  // Cleare the out buffer
 	}
 
 	recv(s, in_buffer, BUFFER_LEN, 0);
