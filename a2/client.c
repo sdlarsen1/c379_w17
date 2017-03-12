@@ -144,7 +144,8 @@ const char *get_user_input(char *key) {
 		scanf("%s", msg);
 
 		if (crypt[0] == '1') {  // Add encryption macro + encrypt
-			char *macro_msg = CRYPT_MACRO;
+			char *macro_msg;
+			strcpy(macro_msg, CRYPT_MACRO);
 			printf("This is the macro being used: %s", macro_msg);
 			strcat(macro_msg, (const char*) msg);
 			printf("This is the message pre_encryption: %s", macro_msg);
