@@ -13,11 +13,59 @@
 #define BUFFER_LEN 1024
 #define MESSAGE_LEN 512
 
-const char *prepare_statement(char type, char *entry, char crypt, char *msg);
-const char *get_user_input();
+
+/*
+    Code taken from
+    http://stackoverflow.com/questions/22863977/dynamically-allocated-2d-array-of-strings-from-file
+*/
+char ** get_keys(FILE* keyfile, int *count) {
+    char** array = NULL;        /* Array of lines */
+    int    i;                   /* Loop counter */
+    char   line[256];           /* Buffer to read each line */
+    int    line_count;          /* Total number of lines */
+    int    line_length;         /* Length of a single line */
 
 
-void get_server_response(char * in_buffer) {
+    /* Get the count of lines in the file */
+    line_count = 0;
+    while (fgets(line, sizeof(line), keyfile) != NULL) {
+       line_count++;
+    }
+
+    /* Move to the beginning of file. */
+    rewind(keyfile);
+
+    /* Allocate an array of pointers to strings
+     * (one item per line). */
+    array = malloc(line_count * sizeof(char *));
+    if (array == NULL) {
+        return NULL; /* Error */
+    }
+
+    /* Read each line from file and deep-copy in the array. */
+    for (i = 0; i < line_count; i++) {
+        /* Read the current line. */
+        fgets(line, sizeof(line), keyfile);
+
+        /* Remove the ending '\n' from the read line. */
+        line_length = strlen(line);
+        line[line_length - 1] = '\0';
+        line_length--; /* update line length */
+
+        /* Allocate space to store a copy of the line. +1 for NUL terminator */
+        array[i] = malloc(line_length + 1);
+
+        /* Copy the line into the newly allocated space. */
+        strcpy(array[i], line);
+    }
+
+    /* Return the array of lines */
+    *count = line_count;
+    return array;
+}
+
+
+void get_server_response(char * in_buffer, char **keys, int *line_count) {
     char *pch, *c, *entry, *msg_len;
     int index;
     bool is_encrypted = false;
@@ -33,15 +81,34 @@ void get_server_response(char * in_buffer) {
             if (c) { is_encrypted = true; }
 
         } else if (is_encrypted) {
-            printf("Message before decryption: %s\n", pch);
-            printf("Message: %s\n", do_decrypt(pch));
+
+            char *msg;
+            bool decrypted = false;
+
+            printf("Trying first key...\n");
+
+            int i;
+            for (i = 0; i < *line_count; i++) {  // try each key, break on success
+                msg = do_decrypt(pch, keys[i]);
+                if (!msg) {
+                    printf("Trying new key...\n");
+                } else {
+                    decrypted = true;
+                    break;
+                }
+            }
+            if (!decrypted) {
+                printf("Unable to decrypt the message.\n");
+            } else {
+                printf("Message: %s", msg);
+            }
+
         } else {
             printf("Message: %s\n", pch);
         }
         pch = strtok(NULL, "\n");  // Get next token
     }
 }
-
 
 const char *get_user_input() {
 
@@ -128,7 +195,7 @@ const char *prepare_statement(char type, char *entry, char crypt, char *msg) {
 
 
 int main(int argc, char *argv[]) {
-	int	s, number, got, port;
+	int	s, number, got, port, line_count;
 
 	struct	sockaddr_in	server;
 	struct  in_addr		ip;
@@ -137,6 +204,7 @@ int main(int argc, char *argv[]) {
 	char 		*ipstr, *filename;
 	char		in_buffer[BUFFER_LEN];
 	char	    out_buffer[BUFFER_LEN];
+	char		**keys;
 
 	if (argc == 1) {
 		printf("Missing args, quitting\n");
@@ -150,9 +218,11 @@ int main(int argc, char *argv[]) {
 		filename = argv[3];
 		FILE* keyfile = fopen(filename, "r");
 		if (keyfile == NULL) {
-        printf("Can't open file %s.\n", filename);
-		exit(0);
-    }
+        	printf("Can't open file %s.\n", filename);
+			exit(0);
+    	}
+		keys = get_keys(keyfile, &line_count);
+		fclose(keyfile); // close file, don't need it anymore
 	} else {
 		printf("WARNING: No keyfile specified -- unable to decrypt encrypted entries.\n")
 	}
@@ -212,4 +282,11 @@ int main(int argc, char *argv[]) {
 	recv(s, in_buffer, BUFFER_LEN, 0);
 
 	close(s);
+
+	// Clean-up
+    int i;
+    for (i = 0; i < line_count; i++) {
+        free(keys[i]);
+    }
+    free(keys);
 }
