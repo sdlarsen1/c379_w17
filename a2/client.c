@@ -25,14 +25,14 @@ const char *get_user_input() {
 	char msg[MESSAGE_LEN];
 	char *crypto_msg;
 
-	printf("What type of query do you wish to make?\n(1) GET\n(2) POST\n>");
+	printf("What type of query do you wish to make?\n(1) GET\n(2) POST\n(3) Clear an entry\n(4) Terminate and dump statefile\n>");
 	scanf("%s", type);
 
 	printf("Which entry do you wish to query?\n>");
 	scanf("%s", entry);
 
 	if (type[0] == '2') {
-		printf("Do you wish to use encryption?\n(1) Yes \n(2) No\n>");
+		printf("Do you wish to use encryption?\n(1) Yes\n(2) No\n>");
 		scanf("%s", crypt);
 
 		printf("What is your update message?\n>");
@@ -44,7 +44,8 @@ const char *get_user_input() {
 		} else {
 			return prepare_statement(type[0], entry, crypt[0], msg);
 		}
-	} else {
+	} else if (type[0] == '1'){
+		memset(msg, 0, MESSAGE_LEN);
 		return prepare_statement(type[0], entry, crypt[0], msg);
 	}
 }
