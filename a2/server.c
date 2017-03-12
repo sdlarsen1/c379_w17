@@ -18,8 +18,7 @@
 
 /*
 	TO DO:
-		Dump statefile on exit
-		Multi-threading
+		cleanup
 */
 
 /*
@@ -281,6 +280,8 @@ void * handle_client(void * arg)
 		printf("%s\n", in_buffer);
 		handle_command(in_buffer, out_buffer);
 		send(socket, out_buffer, strlen(out_buffer)+ 1, 0);
+		memset(in_buffer, 0, BUFFER_LEN);
+		memset(out_buffer, 0, BUFFER_LEN);
 	}
 
 	close(socket);
