@@ -19,7 +19,7 @@ const char *get_user_input();
 
 
 void get_server_response(char * in_buffer) {
-    char *pch, *e, *entry, *msg_len;
+    char *pch, *c, *entry, *msg_len;
     int index;
     bool is_encrypted = false;
 
@@ -30,8 +30,8 @@ void get_server_response(char * in_buffer) {
         if (pch[0] == '!') {  // Deal with header
             printf("Header: %s\n", pch);
 
-            e = strchr(pch, 'e');  // index the e, set encryption status is exists
-            if (e) { is_encrypted = true; }
+            c = strchr(pch, 'c');  // index the c, set encryption status is exists
+            if (c) { is_encrypted = true; }
 
         } else if (is_encrypted) {
             printf("Message before decryption: %s\n", pch);
@@ -97,7 +97,7 @@ const char *prepare_statement(char type, char *entry, char crypt, char *msg) {
 
 	if (type == '2') {
 		if (crypt == '1') {
-			strcat(out_message, "e");  // encrypted
+			strcat(out_message, "c");  // encrypted
 		} else {
 			strcat(out_message, "p");  // plaintext
 		}
@@ -112,6 +112,10 @@ const char *prepare_statement(char type, char *entry, char crypt, char *msg) {
 	}
 
 	strcat(out_message, "\n");
+
+	if (crypt == '1') {
+		strcat(out_message, "CMPUT379 Whiteboard Encrypted v0\n");
+	}
 
 	// Add message
 	if (msg != NULL) {
@@ -143,7 +147,7 @@ int main(int argc, char *argv[]) {
 	ipstr = argv[1];
 
 	if (!inet_aton(ipstr, &ip)) {
-		printf("Cant read IP\n");
+		printf("Can't read IP\n");
 		exit(0);
 	}
 

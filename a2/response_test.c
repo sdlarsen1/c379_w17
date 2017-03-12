@@ -76,12 +76,12 @@ void get_server_response(char * in_buffer) {
         if (pch[0] == '!') {  // Deal with header
             printf("Header: %s\n", pch);
 
-            e = strchr(pch, 'e');  // index the e, set encryption status is exists
-            if (e) { is_encrypted = true; }
+            c = strchr(pch, 'c');  // index the e, set encryption status is exists
+            if (c) { is_encrypted = true; }
 
         } else if (is_encrypted) {
             printf("Message before decryption: %s\n", pch);
-            printf("Message: %s\n", do_decrypt(pch));
+            printf("CMPUT379 Whiteboard Encrypted v0\n%s\n", do_decrypt(pch));
         } else {
             printf("Message: %s\n", pch);
         }
@@ -92,7 +92,7 @@ void get_server_response(char * in_buffer) {
 
 int main() {
     char response1[] = "!12p30\nthisisaresponsetodemothelength\n";
-    char response2[] = "!14e44\nGMVZ0Bdr7x9fF1XUNyj4gFUKsHwd4SWF57LUUJXyQ9U=\n";
+    char response2[] = "!14c44\nGMVZ0Bdr7x9fF1XUNyj4gFUKsHwd4SWF57LUUJXyQ9U=\n";
 
     get_server_response(response1);
     get_server_response(response2);
