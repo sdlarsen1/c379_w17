@@ -12,6 +12,7 @@
 
 #define BUFFER_LEN 1024
 #define MESSAGE_LEN 512
+#define CRYPT_MACRO "CMPUT379 Whiteboard Encrypted v0\n"
 
 
 const char *prepare_statement(char type, char *entry, char crypt, char *msg) ;
@@ -122,7 +123,7 @@ const char *get_user_input(char *key) {
 	char msg[MESSAGE_LEN];
 	char *crypto_msg;
 
-	printf("What type of query do you wish to make?\n(1) GET\n(2) POST\n(3) Clear an entry\n(4) Terminate and dump statefile\n>");
+	printf("What type of query do you wish to make?\n(1) GET\n(2) POST\n(3) Clear an entry\n>");
 	scanf("%s", type);
 
 	printf("Which entry do you wish to query?\n>");
@@ -134,7 +135,7 @@ const char *get_user_input(char *key) {
 		memset(msg, 0, MESSAGE_LEN);  // Clear msg
 		return prepare_statement(type[0], entry, crypt[0], msg);
 
-	} else if (type[0] == '2') {
+	} else if (type[0] == '2') {  // POST query
 
 		printf("Do you wish to use encryption?\n(1) Yes\n(2) No\n>");
 		scanf("%s", crypt);
@@ -142,8 +143,10 @@ const char *get_user_input(char *key) {
 		printf("What is your update message?\n>");
 		scanf("%s", msg);
 
-		if (crypt[0] == '1') {  // POST query
-			crypto_msg = do_crypt(msg, key);
+		if (crypt[0] == '1') {  // Add encryption macro + encrypt
+			char *macro_msg = CRYPT_MACRO;
+			strcat(macro_msg, msg);
+			crypto_msg = do_crypt(macro_msg, key);
 			return prepare_statement(type[0], entry, crypt[0], crypto_msg);
 		} else {
 			return prepare_statement(type[0], entry, crypt[0], msg);
@@ -183,10 +186,6 @@ const char *prepare_statement(char type, char *entry, char crypt, char *msg) {
 
 	strcat(out_message, "\n");
 
-	if (crypt == '1') {
-		strcat(out_message, "CMPUT379 Whiteboard Encrypted v0\n");
-	}
-
 	// Add message
 	if (msg != NULL) {
 		strcat(out_message, msg);
@@ -209,6 +208,7 @@ int main(int argc, char *argv[]) {
 	char		in_buffer[BUFFER_LEN];
 	char	    out_buffer[BUFFER_LEN];
 	char		**keys;
+	bool		has_keys;
 
 	if (argc == 1) {
 		printf("Missing args, quitting\n");
@@ -226,9 +226,11 @@ int main(int argc, char *argv[]) {
 			exit(0);
     	}
 		keys = get_keys(keyfile, &line_count);
+		if (keys) { has_keys = true; }
+		else { has_keys = false; }
 		fclose(keyfile); // close file, don't need it anymore
 	} else {
-		printf("WARNING: No keyfile specified -- unable to decrypt encrypted entries.\n");
+		printf("WARNING: No keyfile specified -- unable to use encryption.\n");
 	}
 
 
