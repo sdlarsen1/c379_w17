@@ -15,7 +15,7 @@
 
 
 const char *prepare_statement(char type, char *entry, char crypt, char *msg) ;
-const char *get_user_input() ;
+const char *get_user_input(char *key) ;
 
 
 /*
@@ -114,7 +114,7 @@ void get_server_response(char * in_buffer, char **keys, int *line_count) {
     }
 }
 
-const char *get_user_input() {
+const char *get_user_input(char *key) {
 
 	char type[2];
 	char crypt[2];
@@ -143,7 +143,7 @@ const char *get_user_input() {
 		scanf("%s", msg);
 
 		if (crypt[0] == '1') {  // POST query
-			crypto_msg = do_crypt(msg, keys[0]);
+			crypto_msg = do_crypt(msg, key);
 			return prepare_statement(type[0], entry, crypt[0], crypto_msg);
 		} else {
 			return prepare_statement(type[0], entry, crypt[0], msg);
@@ -271,7 +271,7 @@ int main(int argc, char *argv[]) {
 		fprintf (stdout, "%s", in_buffer);
 		memset(in_buffer, 0, BUFFER_LEN);
 
-		const char * temp_buff = get_user_input();
+		const char * temp_buff = get_user_input(keys[0]);
 		memcpy(out_buffer, temp_buff, BUFFER_LEN);  // Copy formatted input to the out buffer
 		printf("This is the out message: %s",out_buffer);
 		send(s, out_buffer, strlen(out_buffer), 0);
