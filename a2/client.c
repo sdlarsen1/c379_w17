@@ -17,8 +17,29 @@ const char *prepare_statement(char type, char *entry, char crypt, char *msg);
 const char *get_user_input();
 
 
-const char *get_server_response(char * in_buffer) {
-	
+void get_server_response(char * in_buffer) {
+    char *pch, *e, *entry, *msg_len;
+    int index;
+    bool is_encrypted = false;
+
+    pch = strtok(in_buffer, "\n");
+
+    while (pch != NULL)
+    {
+        if (pch[0] == '!') {  // Deal with header
+            printf("Header: %s\n", pch);
+
+            e = strchr(pch, 'e');  // index the e, set encryption status is exists
+            if (e) { is_encrypted = true; }
+
+        } else if (is_encrypted) {
+            printf("Message before decryption: %s\n", pch);
+            printf("Message: %s\n", do_decrypt(pch));
+        } else {
+            printf("Message: %s\n", pch);
+        }
+        pch = strtok(NULL, "\n");  // Get next token
+    }
 }
 
 
@@ -160,11 +181,11 @@ int main(int argc, char *argv[]) {
 
 		const char * temp_buff = get_user_input();
 		memcpy(out_buffer, temp_buff, BUFFER_LEN);  // Copy formatted input to the out buffer
-
 		printf("This is the out message: %s",out_buffer);
 		send(s, out_buffer, strlen(out_buffer), 0);
+
 		recv(s, in_buffer, BUFFER_LEN, 0);
-		printf("Server's response:\n%s\n", get_server_response(in_buffer));
+		get_server_response(in_buffer));
 
 		close(s);
 		memset(out_buffer, 0, BUFFER_LEN);  // Cleare the out buffer
