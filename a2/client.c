@@ -150,6 +150,7 @@ int main(int argc, char *argv[]) {
 		const char * temp_buff = get_user_input();
 		memcpy(out_buffer, temp_buff, BUFFER_LEN);
 
+		printf("This is the out message: %s",out_buffer);
 		send(s, out_buffer, strlen(out_buffer), 0);
 		recv(s, in_buffer, BUFFER_LEN, 0);
 
