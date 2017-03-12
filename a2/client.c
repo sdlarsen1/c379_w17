@@ -143,9 +143,8 @@ const char *get_user_input(char *key) {
 		scanf("%s", msg);
 
 		if (crypt[0] == '1') {  // Add encryption macro + encrypt
-			char *macro_msg;
-			strcpy(macro_msg, "CMPUT379 Whiteboard Encrypted v0\n");
-			strcat(macro_msg, (const char*) msg);
+			char macro_msg[] = "CMPUT379 Whiteboard Encrypted v0\n";
+			strcat(macro_msg, msg);
 			printf("This is the message pre_encryption: %s", macro_msg);
 			crypto_msg = do_crypt(macro_msg, key);
 			return prepare_statement(type[0], entry, crypt[0], crypto_msg);
