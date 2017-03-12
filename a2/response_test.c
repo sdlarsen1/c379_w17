@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
-// #include <openssl/evp.h>
-// #include <openssl/pem.h>
+#include <openssl/evp.h>
+#include <openssl/pem.h>
 
 
 #define BUFFER_LEN 1024
