@@ -80,9 +80,8 @@ void get_server_response(char * in_buffer) {
             if (e) { is_encrypted = true; }
 
         } else if (is_encrypted) {
-            char msg[MESSAGE_LEN];
-            memcpy(msg, pch, strlen(pch));
-            printf("Message: %s\n", do_decrypt(msg));
+            printf("Message before decryption: %s\n", pch);
+            printf("Message: %s\n", do_decrypt(pch));
         } else {
             printf("Message: %s\n", pch);
         }
