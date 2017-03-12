@@ -140,7 +140,7 @@ const char *get_user_input(char *key) {
 		scanf("%s", crypt);
 
 		printf("What is your update message?\n>");
-		scanf("%s\n", msg);
+		scanf("%s", msg);
 
 		if (crypt[0] == '1') {  // Add encryption macro + encrypt
 			char macro_msg[] = "CMPUT379 Whiteboard Encrypted v0\n";
@@ -152,6 +152,8 @@ const char *get_user_input(char *key) {
 			return prepare_statement(type[0], entry, crypt[0], msg);
 		}
 
+	} else {
+		return prepare_statement(type[0], entry, crypt[0], msg = NULL);
 	}
 }
 
@@ -168,7 +170,7 @@ const char *prepare_statement(char type, char *entry, char crypt, char *msg) {
 
 	strcat(out_message, entry);
 
-	if (type == '2') {
+	if (type != '1') {
 		if (crypt == '1') {
 			strcat(out_message, "c");  // encrypted
 		} else {
@@ -182,6 +184,8 @@ const char *prepare_statement(char type, char *entry, char crypt, char *msg) {
 		char buff[sizeof(int)];
 		sprintf(buff, "%d", length);
 		strcat(out_message, buff);
+	} else if (type == '3') {
+		strcat(out_message, "0")
 	}
 
 	strcat(out_message, "\n");
@@ -189,8 +193,8 @@ const char *prepare_statement(char type, char *entry, char crypt, char *msg) {
 	// Add message
 	if (msg != NULL) {
 		strcat(out_message, msg);
-		strcat(out_message, "\n");
 	}
+	strcat(out_message, "\n");
 
 	// return/print out_message
 	return out_message;
