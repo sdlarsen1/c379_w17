@@ -92,7 +92,7 @@ void get_server_response(char * in_buffer) {
 
 int main() {
     char response1[] = "!12p30\nthisisaresponsetodemothelength\n";
-    char response2[] = "!17e24\nA2zKAL/RomGTl+/C2iqdbg==\n";
+    char response2[] = "!14e44\nGMVZ0Bdr7x9fF1XUNyj4gFUKsHwd4SWF57LUUJXyQ9U=\n";
 
     get_server_response(response1);
     get_server_response(response2);
