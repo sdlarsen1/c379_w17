@@ -108,6 +108,6 @@ const char * do_crypt(char *in_msg) {
 
     outlen += tmplen;
     EVP_CIPHER_CTX_cleanup(&ctx);
-    printf("After encryption, out_msg = %s\n", out_msg);
+    printf("After encryption, out_msg = %s\n", base64encode(out_msg, outlen));
 	return base64encode(out_msg, outlen);
 }
