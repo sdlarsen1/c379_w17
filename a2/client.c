@@ -40,7 +40,7 @@ const char *get_user_input() {
 
 		if (crypt[0] == '1') {
 			crypto_msg = do_crypt(msg);
-			return prepare_statement(type[0], entry, crypt[0], msg);  // FIX THIS AFTER ENCRYPTION
+			return prepare_statement(type[0], entry, crypt[0], crypto_msg);
 		} else {
 			return prepare_statement(type[0], entry, crypt[0], msg);
 		}
