@@ -12,7 +12,6 @@
 
 #define BUFFER_LEN 1024
 #define MESSAGE_LEN 512
-#define CRYPT_MACRO "CMPUT379 Whiteboard Encrypted v0\n"
 
 
 const char *prepare_statement(char type, char *entry, char crypt, char *msg) ;
@@ -145,8 +144,7 @@ const char *get_user_input(char *key) {
 
 		if (crypt[0] == '1') {  // Add encryption macro + encrypt
 			char *macro_msg;
-			strcpy(macro_msg, CRYPT_MACRO);
-			printf("This is the macro being used: %s", macro_msg);
+			strcpy(macro_msg, "CMPUT379 Whiteboard Encrypted v0\n");
 			strcat(macro_msg, (const char*) msg);
 			printf("This is the message pre_encryption: %s", macro_msg);
 			crypto_msg = do_crypt(macro_msg, key);
