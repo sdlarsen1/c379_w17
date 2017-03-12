@@ -14,6 +14,10 @@
 #define MESSAGE_LEN 512
 
 
+const char *prepare_statement(char type, char *entry, char crypt, char *msg) ;
+const char *get_user_input() ;
+
+
 /*
     Code taken from
     http://stackoverflow.com/questions/22863977/dynamically-allocated-2d-array-of-strings-from-file
