@@ -187,7 +187,7 @@ int main(int argc, char *argv[]) {
 		send(s, out_buffer, strlen(out_buffer), 0);
 
 		recv(s, in_buffer, BUFFER_LEN, 0);
-		get_server_response(in_buffer);
+		get_server_response(in_buffer);  // NEEDS TO BE PROPERLY TESTED
 
 		close(s);
 		memset(out_buffer, 0, BUFFER_LEN);  // Cleare the out buffer
