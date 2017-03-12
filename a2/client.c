@@ -31,22 +31,27 @@ const char *get_user_input() {
 	printf("Which entry do you wish to query?\n>");
 	scanf("%s", entry);
 
-	if (type[0] == '2') {
+
+	if (type[0] == '1') {  // GET query
+
+		memset(msg, 0, MESSAGE_LEN);  // Clear msg
+		return prepare_statement(type[0], entry, crypt[0], msg);
+
+	} else if (type[0] == '2') {
+
 		printf("Do you wish to use encryption?\n(1) Yes\n(2) No\n>");
 		scanf("%s", crypt);
 
 		printf("What is your update message?\n>");
 		scanf("%s", msg);
 
-		if (crypt[0] == '1') {
+		if (crypt[0] == '1') {  // POST query
 			crypto_msg = do_crypt(msg);
 			return prepare_statement(type[0], entry, crypt[0], crypto_msg);
 		} else {
 			return prepare_statement(type[0], entry, crypt[0], msg);
 		}
-	} else if (type[0] == '1'){
-		memset(msg, 0, MESSAGE_LEN);
-		return prepare_statement(type[0], entry, crypt[0], msg);
+
 	}
 }
 
