@@ -179,6 +179,7 @@ int main(int argc, char *argv[]) {
 
 		recv(s, in_buffer, BUFFER_LEN, 0);
 		fprintf (stdout, "%s", in_buffer);
+		memset(in_buffer, 0, BUFFER_LEN);
 
 		const char * temp_buff = get_user_input();
 		memcpy(out_buffer, temp_buff, BUFFER_LEN);  // Copy formatted input to the out buffer
