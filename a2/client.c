@@ -153,7 +153,7 @@ const char *get_user_input(char *key) {
 		}
 
 	} else {
-		return prepare_statement(type[0], entry, crypt[0], msg = NULL);
+		return prepare_statement(type[0], entry, crypt[0], msg = '');
 	}
 }
 
@@ -185,7 +185,7 @@ const char *prepare_statement(char type, char *entry, char crypt, char *msg) {
 		sprintf(buff, "%d", length);
 		strcat(out_message, buff);
 	} else if (type == '3') {
-		strcat(out_message, "0")
+		strcat(out_message, "0");
 	}
 
 	strcat(out_message, "\n");
