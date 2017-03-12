@@ -143,7 +143,7 @@ const char *get_user_input() {
 		scanf("%s", msg);
 
 		if (crypt[0] == '1') {  // POST query
-			crypto_msg = do_crypt(msg);
+			crypto_msg = do_crypt(msg, keys[0]);
 			return prepare_statement(type[0], entry, crypt[0], crypto_msg);
 		} else {
 			return prepare_statement(type[0], entry, crypt[0], msg);
@@ -228,7 +228,7 @@ int main(int argc, char *argv[]) {
 		keys = get_keys(keyfile, &line_count);
 		fclose(keyfile); // close file, don't need it anymore
 	} else {
-		printf("WARNING: No keyfile specified -- unable to decrypt encrypted entries.\n")
+		printf("WARNING: No keyfile specified -- unable to decrypt encrypted entries.\n");
 	}
 
 
@@ -277,7 +277,7 @@ int main(int argc, char *argv[]) {
 		send(s, out_buffer, strlen(out_buffer), 0);
 
 		recv(s, in_buffer, BUFFER_LEN, 0);
-		get_server_response(in_buffer);  // NEEDS TO BE PROPERLY TESTED
+		get_server_response(in_buffer, keys, &line_count);  // NEEDS TO BE PROPERLY TESTED
 
 		close(s);
 		memset(out_buffer, 0, BUFFER_LEN);  // Cleare the out buffer
