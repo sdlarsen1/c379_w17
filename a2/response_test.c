@@ -80,6 +80,8 @@ void get_server_response(char * in_buffer) {
             if (e) { is_encrypted = true; }
 
         } else if (is_encrypted) {
+            char *stripped;
+            memcpy(stripped, pch, strlen(pch)-1);
             printf("Message: %s\n", do_decrypt(pch));
         } else {
             printf("Message: %s\n", pch);
