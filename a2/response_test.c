@@ -116,7 +116,7 @@ const char * do_decrypt(char * in_msg, char *encoded_key) {
 
 
 void get_server_response(char * in_buffer, char **keys, int *line_count) {
-    char *pch, *e, *entry, *msg_len;
+    char *pch, *c, *entry, *msg_len;
     int index;
     bool is_encrypted = false;
 
@@ -131,11 +131,11 @@ void get_server_response(char * in_buffer, char **keys, int *line_count) {
             if (c) { is_encrypted = true; }
 
         } else if (is_encrypted) {
-
+            char *msg;
             bool decrypted = false;
             printf("Trying first key...\n");
-            for (i = 0; i < line_count; i++) {
-                char *msg = do_decrypt_new(pch, keys[i]);
+            for (int i = 0; i < line_count; i++) {
+                msg = do_decrypt_new(pch, keys[i]);
                 if (!msg) {
                     printf("Trying new key...\n");
                 } else {
@@ -176,7 +176,7 @@ int main(int argc, char* argv[]) {
     get_server_response(response2, keys, &line_count);
 
     // Clean-up
-    for (i = 0; i < line_count; i++) {
+    for (int i = 0; i < line_count; i++) {
         free(keys[i]);
     }
     free(keys);
