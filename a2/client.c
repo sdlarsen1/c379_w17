@@ -191,7 +191,7 @@ const char *prepare_statement(char type, char *entry, char crypt, char *msg) {
 	strcat(out_message, "\n");
 
 	// Add message
-	if (msg != NULL) {
+	if (type == '2') {
 		strcat(out_message, msg);
 	}
 	strcat(out_message, "\n");
