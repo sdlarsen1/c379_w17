@@ -9,7 +9,7 @@ const char * do_decrypt_new(char * in_msg, char *key) {
 
     int outlen, delen;
     static unsigned char out_msg[MESSAGE_LEN], out_buff[MESSAGE_LEN];
-    unsigned char key[] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
+    // unsigned char key[] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
     unsigned char iv[] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
     EVP_CIPHER_CTX ctx;
 
@@ -42,11 +42,11 @@ const char * do_decrypt_new(char * in_msg, char *key) {
 }
 
 
-const char * do_crypt_new(char *in_msg char *key) {
+const char * do_crypt_new(char *in_msg, char *key) {
 
     static unsigned char out_msg[MESSAGE_LEN];
     int outlen, tmplen, i;
-    unsigned char key[] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
+    // unsigned char key[] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
     unsigned char iv[] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
     // char *in_msg = "some Crypto Text";
     EVP_CIPHER_CTX ctx;
