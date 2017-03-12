@@ -153,7 +153,7 @@ const char *get_user_input(char *key) {
 		}
 
 	} else {
-		return prepare_statement(type[0], entry, crypt[0], msg[0] = "1");
+		return prepare_statement(type[0], entry, crypt[0], msg);
 	}
 }
 
@@ -191,7 +191,7 @@ const char *prepare_statement(char type, char *entry, char crypt, char *msg) {
 	strcat(out_message, "\n");
 
 	// Add message
-	if (msg[0] != '1') {
+	if (msg != NULL) {
 		strcat(out_message, msg);
 	}
 	strcat(out_message, "\n");
