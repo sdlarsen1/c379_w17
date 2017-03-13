@@ -341,7 +341,7 @@ void sigterm_handler(int sig){
 		free(whiteboard[i]);
 	}
 
-	pthread_mutex_lock(&mutex)
+	pthread_mutex_lock(&mutex);
 	free(whiteboard);
 	free(is_encrypted);
 	free(entry_len);
