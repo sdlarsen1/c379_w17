@@ -277,7 +277,7 @@ int main(int argc, char *argv[]) {
 		fprintf (stdout, "%s", in_buffer);
 		memset(in_buffer, 0, BUFFER_LEN);
 
-		if (has_keys == false) { strcpy(keys[0], "none"); }
+		if (has_keys == false) { strcpy(*keys, "none"); }
 		printf("This is the key: %s\n", keys[0]);
 		const char * temp_buff = get_user_input(keys[0]);
 		memcpy(out_buffer, temp_buff, BUFFER_LEN);  // Copy formatted input to the out buffer
