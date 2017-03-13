@@ -282,6 +282,7 @@ int main(int argc, char *argv[]) {
 		send(s, out_buffer, strlen(out_buffer), 0);
 
 		recv(s, in_buffer, BUFFER_LEN, 0);
+		printf("This is the in_buffer: %s", in_buffer);
 		get_server_response(in_buffer, keys, &line_count);  // NEEDS TO BE PROPERLY TESTED
 
 		close(s);
