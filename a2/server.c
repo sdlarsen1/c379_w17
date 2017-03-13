@@ -41,28 +41,56 @@ char **whiteboard;	// array of pointers to strings, init in main
 int *is_encrypted;
 int *entry_len;
 
-//pthread_t threads[MAX_THREADS];
-//int thread_free[MAX_THREADS] = {0};
-
 pthread_mutex_t mutex;
 pthread_mutex_t log_mutex;
 
 FILE * logfp = NULL;
 
 // Function prototypes
+
+/*
+	handle_client puts the client in a command loop
+		with the server, until the server shuts down,
+		or the client disconnects. The arg is the
+		socket number.
+*/
 void * handle_client(void * arg);
 
+/*
+	sigterm_handler causes the graceful shutdown of the server
+		upon receiving SIGTERM. Attempts to open "whiteboard.all"
+		and write to contents of the whiteboard to it before
+		exiting.
+*/
 void sigterm_handler(int sig);
 
+/*
+	handle_command receives a command (from a client or a statefile)
+		and acts on it. These can be read commands or write commands.
+
+*/
 int handle_command(char * cmd, char * buffer);
 
+/*
+	parse_cmd is a helper function for handle_command which takes a
+		commands and writes the fields of the command in
+		type, entry, len (message length). text is a
+		pointer to the start of the message segment of the command.
+*/
 int parse_cmd(char * cmd, char * type, int * entry, int * len, char **text);
 
+/*
+	count_entries takes a pointer to a statefile and counts how many
+		entries are written in it.
+*/
 int count_entries(FILE * file);
 
-void loadcmd(char * buffer, FILE * statefile);
 
-int getfreethread(void);
+/*
+	loadcmd loads entry from a statefile and puts it in buffer, in
+		a form where handle_command can execute it.
+*/
+void loadcmd(char * buffer, FILE * statefile);
 
 int main(int argc, char * argv[])
 {
@@ -111,15 +139,15 @@ int main(int argc, char * argv[])
     	} */
 
 	close(STDIN_FILENO);
-    	//close(STDOUT_FILENO);
+    	close(STDOUT_FILENO);
     	close(STDERR_FILENO);
-
-	signal(SIGTERM,sigterm_handler);
 
 	fprintf(logfp, "server start\n");
 
+	// -- set the signal handler --
+	signal(SIGTERM,sigterm_handler);
 
-	// declare vars
+	// -- declare vars --
 	int	sock, snew, fromlength, i, statefileflag = 0, portnum, th;
 	pthread_t newthread;
 
@@ -139,7 +167,7 @@ int main(int argc, char * argv[])
 
 	portnum = atoi(argv[1]);
 
-	// -- init whiteboard--
+	// -- init whiteboard --
 	for (i = 2; i < argc; i++)
 	{
 
@@ -163,7 +191,6 @@ int main(int argc, char * argv[])
 
 	if (statefileflag)
 	{
-		// printf("Statefile = '%s'\n", statefilename);
 		statefile = fopen(statefilename, "r");
 
 		if (statefile == NULL)
@@ -229,11 +256,7 @@ int main(int argc, char * argv[])
 
 		snew = accept (sock, (struct sockaddr*) & from, & fromlength);
 
-		//printf("Connection accepted\n");
 		if (snew < 0) {
-			//logfp = fopen("server.log", "w+");
-			//if (logfp)
-			//	exit(1);
 			pthread_mutex_lock(&log_mutex);
 			fprintf(logfp, "Server: accept failed");
 
@@ -243,27 +266,12 @@ int main(int argc, char * argv[])
 
 		//Send the welcome message to the new client
 		send(snew, welcomeString, strlen(welcomeString) + 1, 0);
+
 		// Spawn a thread for this new client
-		//th = getfreethread();
-	
 		pthread_create(&newthread, NULL, handle_client, (void *) &snew);
 		pthread_mutex_lock(&log_mutex);
-		fprintf(logfp, "created new thread: %d\n", (int) (unsigned long) newthread);
+		fprintf(logfp, "created new thread: %d\n",(unsigned int) (unsigned long) newthread);
 		pthread_mutex_unlock(&log_mutex);				
-
-		//
-
-		//recv(snew, in_buffer, BUFFER_LEN, 0);
-		//fprintf(logfp, "received '%s'\n", in_buffer);
-
-		//handle_command(in_buffer, out_buffer);
-
-		//fprintf(logfp, "response '%s'\n", out_buffer);
-		//send(snew, out_buffer, strlen(out_buffer)+ 1, 0);
-		//close (snew);
-
-		//fflush(logfp);
-		//printf("Connection closed\n");
 	}
 }
 
@@ -277,36 +285,35 @@ void * handle_client(void * arg)
 	// enter command loop
 	while (recv(socket, in_buffer, BUFFER_LEN, 0) > 0)
 	{
-		printf("%s\n", in_buffer);
+		// log incoming message
+		pthread_mutex_lock(&log_mutex);
+		fprintf(logfp, "received at %d : '%s'\n", 
+				(unsigned int) (unsigned long) pthread_self(), in_buffer);
+		pthread_mutex_unlock(&log_mutex);
+
+		// Handle the command
 		handle_command(in_buffer, out_buffer);
 		send(socket, out_buffer, strlen(out_buffer)+ 1, 0);
+
+		// log reply
+		pthread_mutex_lock(&log_mutex);
+		fprintf(logfp, "sent from %d : '%s'\n", 
+				(unsigned int) (unsigned long) pthread_self(), out_buffer);
+		pthread_mutex_unlock(&log_mutex);
+
 		memset(in_buffer, 0, BUFFER_LEN * sizeof(char));
 		memset(out_buffer, 0, BUFFER_LEN * sizeof(char));
 	}
 
 	close(socket);
 
-	// free the thread
+	// close the thread
 	pthread_mutex_lock(&log_mutex);
-	fprintf(logfp, "thread closed: %d\n", (int) (unsigned long)  pthread_self());
+	fprintf(logfp, "thread closed: %d\n", (unsigned int) (unsigned long)  pthread_self());
 	pthread_mutex_unlock(&log_mutex);
 
 	pthread_exit(0);
 }
-
-/*
-int getfreethread(void)
-{
-	int i;
-	for (i = 0; i < MAX_THREADS; i++)
-	{
-		if (thread_free[i] == 0)
-			return i;	// index of a free thread
-	}
-
-	return -1;
-}
-*/
 
 void sigterm_handler(int sig){
 	fprintf(logfp, "received SIGTERM\n");
@@ -334,6 +341,7 @@ void sigterm_handler(int sig){
 		free(whiteboard[i]);
 	}
 
+	pthread_mutex_lock(&mutex)
 	free(whiteboard);
 	free(is_encrypted);
 	free(entry_len);
@@ -452,6 +460,8 @@ int handle_command(char * cmd, char * buffer)
 	int entry, len, valid;
 	char type,  tmp[64] = {0};
 	char * text;
+
+	// ERRORS
 	const char * err_noentry = "No Such Entry";
 	const char * err_unknown_cmd = "Unknown Command";
 	const char * err_toolong	= "Entry Too Long";
@@ -470,7 +480,10 @@ int handle_command(char * cmd, char * buffer)
 	else if ((entry > WB_NUM_ENTRIES) || (entry <= 0))
 	{
 		// no such entry!
-				strcat(buffer, "!");
+		sprintf(buffer, "!%de%d\n%s\n", entry, strlen(err_noentry), err_noentry);
+
+		/*
+		strcat(buffer, "!");
 		sprintf(tmp, "%d", entry);
 		strcat(buffer, tmp);
 		strcat(buffer, "e");
@@ -479,12 +492,13 @@ int handle_command(char * cmd, char * buffer)
 		strcat(buffer, "\n");
 		strcat(buffer, err_noentry);
 		strcat(buffer, "\n\0");
+		*/
 	}
 
 	else if (cmd[0] == '?')
 	{
 		//printf("query\n");
-		// query the whiteboard
+		
 		// -- start critical section --
 		pthread_mutex_lock(&mutex);
 
@@ -503,7 +517,7 @@ int handle_command(char * cmd, char * buffer)
 	else if (cmd[0] == '@')
 	{
 		// update the whiteboard
-		// printf("update\n");
+		
 		if (len > (WB_ENTRY_SIZE - 1))
 		{
 			sprintf(buffer, "!%de%d\n%s\n", entry, 
@@ -514,7 +528,6 @@ int handle_command(char * cmd, char * buffer)
 
 		// -- start critical section --
 		pthread_mutex_lock(&mutex);
-		// removed  & \/
 		memcpy(whiteboard[entry - 1], text, len);
 		whiteboard[entry - 1][len] = '\0';		
 
