@@ -46,7 +46,7 @@ pthread_mutex_t log_mutex;
 
 FILE * logfp = NULL;
 
-// Function prototypes
+// Function prototypes  
 
 /*
 	handle_client puts the client in a command loop
