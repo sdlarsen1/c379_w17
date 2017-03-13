@@ -211,7 +211,7 @@ int main(int argc, char *argv[]) {
 	char		in_buffer[BUFFER_LEN];
 	char	    out_buffer[BUFFER_LEN];
 	char		**keys;
-	bool		has_keys;
+	bool		has_keys = false;
 
 	if (argc == 1) {
 		printf("Missing args, quitting\n");
@@ -230,7 +230,6 @@ int main(int argc, char *argv[]) {
     	}
 		keys = get_keys(keyfile, &line_count);
 		if (keys) { has_keys = true; }
-		else { has_keys = false; }
 		fclose(keyfile); // close file, don't need it anymore
 	} else {
 		printf("WARNING: No keyfile specified -- unable to use encryption.\n");
@@ -278,11 +277,11 @@ int main(int argc, char *argv[]) {
 
 		const char * temp_buff = get_user_input(keys[0]);
 		memcpy(out_buffer, temp_buff, BUFFER_LEN);  // Copy formatted input to the out buffer
-		printf("This is the out message: %s",out_buffer);
+		// printf("This is the out message: %s",out_buffer);
 		send(s, out_buffer, strlen(out_buffer), 0);
 
 		recv(s, in_buffer, BUFFER_LEN, 0);
-		printf("This is the in_buffer: %s", in_buffer);
+		// printf("This is the in_buffer: %s", in_buffer);
 		get_server_response(in_buffer, keys, &line_count);  // NEEDS TO BE PROPERLY TESTED
 
 		close(s);
