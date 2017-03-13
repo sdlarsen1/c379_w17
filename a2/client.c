@@ -136,10 +136,8 @@ const char *get_user_input(char *key) {
 
 	} else if (type[0] == '2') {  // POST query
 
-		if (key != "none") {
-			printf("Do you wish to use encryption?\n(1) Yes\n(2) No\n>");
-			scanf("%s", crypt);
-		} else { strcpy(crypt, "2"); }
+		printf("Do you wish to use encryption?\n(1) Yes\n(2) No\n>");
+		scanf("%s", crypt);
 
 		printf("What is your update message?\n>");
 		scanf("%s", msg);
@@ -277,8 +275,6 @@ int main(int argc, char *argv[]) {
 		fprintf (stdout, "%s", in_buffer);
 		memset(in_buffer, 0, BUFFER_LEN);
 
-		if (has_keys == false) { strcpy(*keys, "none"); }
-		printf("This is the key: %s\n", keys[0]);
 		const char * temp_buff = get_user_input(keys[0]);
 		memcpy(out_buffer, temp_buff, BUFFER_LEN);  // Copy formatted input to the out buffer
 		// printf("This is the out message: %s",out_buffer);
