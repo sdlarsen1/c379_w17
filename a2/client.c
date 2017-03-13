@@ -213,7 +213,7 @@ int main(int argc, char *argv[]) {
 	char		in_buffer[BUFFER_LEN];
 	char	    out_buffer[BUFFER_LEN];
 	char		**keys;
-	bool		has_keys;
+	bool		has_keys = false;
 
 	if (argc == 1) {
 		printf("Missing args, quitting\n");
@@ -232,7 +232,6 @@ int main(int argc, char *argv[]) {
     	}
 		keys = get_keys(keyfile, &line_count);
 		if (keys) { has_keys = true; }
-		else { has_keys = false; }
 		fclose(keyfile); // close file, don't need it anymore
 	} else {
 		printf("WARNING: No keyfile specified -- unable to use encryption.\n");
