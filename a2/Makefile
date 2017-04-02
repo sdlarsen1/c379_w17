@@ -20,4 +20,4 @@ encryption.o: encryption.c encryption.h
 	$(CC) -c encryption.c -lcrypto
 
 clean:
-	rm -rf server client *.o
+	rm -rf server client wbs379 wbc379 *.o
