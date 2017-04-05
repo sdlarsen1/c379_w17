@@ -1,0 +1,23 @@
+Pull a memory access from file X
+
+Is that page in the TLB?
+	If so, tlbhitsX ++
+
+Else:
+	If TLB is not global and context switch is needed, flush TLB
+
+	Is the page in memory?
+
+	Else:
+		Page fault:
+		pfX ++
+		Find a free frame in page, 
+		or evict a page form processY based on FIFO, or LRU, then pageoutY ++ 
+		Add to page table
+
+	Add it to TLB
+	Evict anoher from TLB using LRU
+
+Finally		
+	update avs for all processes?
+		
