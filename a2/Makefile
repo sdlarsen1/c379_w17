@@ -5,7 +5,7 @@ all:
 	make client server
 
 client: client.o encryption.o
-	$(CC) $(FLAGS) client.o encryption.o -lcrypto -o wbc379
+	$(CC) client.o encryption.o $(FLAGS) -L//usr/lib/x86_64-linux-gnu/libcrypto.so -lcrypto -o wbc379
 
 server: server.o
 	$(CC) $(FLAGS) server.o -o wbs379
@@ -14,7 +14,7 @@ server.o: server.c
 	$(CC) -c $(FLAGS) server.c
 
 client.o: client.c
-	$(CC) -c $(FLAGS) client.c
+	$(CC) -c $(FLAGS) client.c -lcrypto 
 
 encryption.o: encryption.c encryption.h
 	$(CC) -c encryption.c -lcrypto
