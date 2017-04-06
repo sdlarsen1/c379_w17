@@ -1,5 +1,5 @@
 #include <stdlib.h>
-#include <tlb.h>
+#include "tlb.h"
 
 struct TLB * create_tlb(int tlbentries, char mode)
 {
@@ -10,7 +10,7 @@ struct TLB * create_tlb(int tlbentries, char mode)
 		tlb->ASID_table = NULL;
 	else
 		tlb->ASID_table = malloc((sizeof int) * tlbentries);
-	
+
 	tlb->LRU_table = malloc((sizeof int) * tlbentries);
 
 }

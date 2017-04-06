@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "page_table.h"
+#include "tlb.h"
 
 int main(int argc, char *argv[]) {
 
