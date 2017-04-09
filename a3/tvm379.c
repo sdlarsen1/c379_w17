@@ -22,11 +22,13 @@ unsigned int get_value_from_tf(struct Trace_Files * trace_files, int tf, int off
 	FILE * file = trace_files->file_ptrs[tf];
 
 	fseek(file, offset, SEEK_SET);
-	fread(buffer, 4, 1, file);
+	if (fread(buffer, 4, 1, file) != 0) {
+		unsigned int ret_int = atoi((const char *) buffer);
+		return ret_int;
+	} else {
+		return 0;
+	}
 
-	unsigned int ret_int = atoi((const char *) buffer);
-
-	return ret_int;
 }
 
 
@@ -63,23 +65,28 @@ int main(int argc, char *argv[]) {
 			for (int offset = 0; offset < (final_entry * 4); offset += 4) {
 				unsigned int pagenum = get_value_from_tf(trace_files, tf, offset);
 
-				if (query_entry_tlb(tlb, pagenum, (unsigned int) tf)) {
-					trace_files->tlbhits[tf] += 1;  // tlbhit++ if exists
-				} else {
-					if (tlb_mode == 'p') {
-						// flush tlb if not global
-						flush_tlb(tlb);
-					}
-
-					if (!query_page_table(page_table, pagenum)) {  // not in page_table
-						trace_files->pf[tf] += 1;
-						if (add_entry_pt(page_table, pagenum, pt_mode)) {
-							trace_files->pageout[tf] += 1;
+				if (pagenum != 0) {
+					if (query_entry_tlb(tlb, pagenum, (unsigned int) tf)) {
+						trace_files->tlbhits[tf] += 1;  // tlbhit++ if exists
+					} else {
+						if (tlb_mode == 'p') {
+							// flush tlb if not global
+							flush_tlb(tlb);
 						}
-					}
 
-					add_entry_tlb(tlb, pagenum, (unsigned int) tf);
+						if (!query_page_table(page_table, pagenum)) {  // not in page_table
+							trace_files->pf[tf] += 1;
+							if (add_entry_pt(page_table, pagenum, pt_mode)) {
+								trace_files->pageout[tf] += 1;
+							}
+						}
+
+						add_entry_tlb(tlb, pagenum, (unsigned int) tf);
+					}
+				} else {
+					continue;
 				}
+
 			}
 			final_entry += quantum;
 		}
