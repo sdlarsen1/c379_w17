@@ -6,7 +6,7 @@ struct Page_Table {
 	unsigned int * physical_addr;  // address in physical memory
 	unsigned int * LRU_table;
 	unsigned int * FIFO_table;
-}
+};
 
 struct Page_Table * create_page_table(int physpages, char mode);  // mode == f or 1
 void destroy_page_table(struct Page_Table * page_table);
