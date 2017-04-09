@@ -1,6 +1,11 @@
 #include <stdlib.h>
 #include "page_table.h"
 
+/*
+	TO DO:
+		complete implementation of PID tracking in add_entry, evict page
+*/
+
 // push a new entry into the FIFO array
 void FIFO_push(struct Page_Table * pt, int new);
 int get_oldest(struct Page_Table * pt);
@@ -95,22 +100,26 @@ int add_entry_pt(struct Page_Table * page_table, int pagenum, char mode) {
 }
 
 // !! potentially return PID of evicted page? !!
-void evict_page_LRU(struct Page_Table * page_table, unsigned int new_pagenum)
+int evict_page_LRU(struct Page_Table * page_table, unsigned int new_pagenum)
 {
 	int LRU = get_LRU_pt(page_table);
+	int LRU_pid = page_table->pid[LRU];
 	page_table->logical_addr = new_pagenum;
 	set_MRU_pt(page_table, LRU);
 
 	// return PID
+	return LRU_pid;
 }
 
-void evict_page_FIFO(struct Page_Table * page_table,unsigned int new_pagenum)
+int evict_page_FIFO(struct Page_Table * page_table,unsigned int new_pagenum)
 {
 	int oldest = get_oldest(page_table);
+	int oldest_pid = page_table->pid[oldest];
 	page_table->logical_addr = new_pagenum;
 	FIFO_push(oldest);
 
 	// return PID
+	return oldest_pid;
 }
 
 int query_page_table(struct Page_Table * page_table, unsigned int pagenum)
@@ -125,6 +134,7 @@ int query_page_table(struct Page_Table * page_table, unsigned int pagenum)
 	return 0;
 }
 
+// maybe cache these values in an other array?
 double count_entries(struct Page_Table * page_table, int pid)
 {
 	int entry;
