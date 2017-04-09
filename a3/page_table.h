@@ -16,6 +16,6 @@ void evict_page_FIFO(struct Page_Table * page_table);
 
 int query_page_table(struct Page_Table * page_table, unsigned int pagenum);  // returns 1 if entry exists, else 0
 
-int add_entry_pt(struct Page_Table * page_table);  // returns 1 if there is an eviction, else 0
+int add_entry_pt(struct Page_Table * page_table, int pagenum, char mode);  // returns 1 if there is an eviction, else 0
 
 #endif

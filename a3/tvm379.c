@@ -46,22 +46,30 @@ int main(int argc, char *argv[]) {
     	trace_files->file_ptrs[i] = fopen(argv[i], "r");
 	}
 
+	// Create tlb and page table
+	struct TLB * tlb = create_tlb(tlbentries, tlb_mode);
+	struct Page_Table * page_table = create_page_table(physpages, pt_mode);
+
 	bool done = false;
 	int final_entry = quantum;
 	do {
 		for (int i = 0; i < (num_tf); i++) {
 			for (int j = 0; j < (final_entry * 4); j += 4) {
-				if (query_entry()) {
+				int pagenum = trace_files->file_ptrs[i][j]
+				if (query_entry(tlb, pagenum)) {
 					trace_files->tlbhits[i] += 1;
 				} else {
-					// flush tlb if not global
-					if (!query_page_table()) {  // not in page_table
+					if (mode == 'p') {
+						// flush tlb if not global
+					}
+
+					if (!query_page_table(page_table, pagenum)) {  // not in page_table
 						trace_files->pf[i] += 1;
-						int evicted = add_entry_pt();
-						if (evicted) {
+						if (add_entry_pt(page_table, pagenum, mode)) {
 							trace_files->pageout[i] += 1;
 						}
 					}
+
 					add_entry();
 				}
 			}

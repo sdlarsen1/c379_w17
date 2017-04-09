@@ -15,6 +15,8 @@ struct Page_Table * create_page_table(int physpages, char mode) {
         page_table->FIFO_table = malloc((sizeof int) * physpages);
         page_table->LRU_table = NULL;
     }
+
+    return page_table;
 }
 
 
