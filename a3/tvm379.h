@@ -1,7 +1,7 @@
 #include <stdio.h>
 
 struct Trace_Files {
-	FILE * file_ptrs;
+	FILE ** file_ptrs;
 	int * tlbhits;
 	int * pf;
 	int * pageout;

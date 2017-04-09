@@ -1,5 +1,5 @@
 CC = gcc
-FLAGS = -m32
+FLAGS = -m32 -std=c99
 
 all:
 	make tvm379
@@ -13,7 +13,7 @@ page_table.o: page_table.c page_table.h
 tlb.o: tlb.c tlb.h
 	$(CC) -c $(FLAGS) tlb.c tlb.h
 
-tvm379.o: tvm379.c tvm379.h
+tvm379.o: tvm379.c tvm379.h tlb.o page_table.o
 	$(CC) $(FLAGS) tvm379.c tvm379.h
 
 clean:
