@@ -9,13 +9,14 @@ struct TLB
 	unsigned int * page_table;
 	unsigned int * ASID_table;
 	unsigned int * LRU_table;
+	unsigned int * valid;
 };
 
 struct TLB * create_tlb(int tlbentries, char mode);		// mode == g or p
 
 int query_entry_tlb(struct TLB * tlb, unsigned int pagenum, unsigned int asid);	// returns 1 if page in table, else 0
 
-void add_entry_tlb(struct TLB * tlb, unsigned int pagenum, unsigned int asid);
+int add_entry_tlb(struct TLB * tlb, unsigned int pagenum, unsigned int asid);
 
 void destroy_tlb(struct TLB * tlb);
 

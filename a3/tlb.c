@@ -36,17 +36,19 @@ struct TLB * create_tlb(int tlbentries, char mode)
 {
 	struct TLB * tlb;
 	tlb = (struct TLB *) malloc(sizeof struct TLB);
-	tlb->page_table = (unsigned int *) malloc((sizeof int) * tlbentries);
+	tlb->page_table = (unsigned int *) malloc((sizeof unsigned int) * tlbentries);
 
 	if (mode == 'p')
 		tlb->ASID_table = NULL;
 
 	else
-		tlb->ASID_table = (unsigned int *) malloc((sizeof int) * tlbentries);
+		tlb->ASID_table = (unsigned int *) malloc((sizeof unsigned int) * tlbentries);
 
-	tlb->LRU_table = (unsigned int *) malloc((sizeof int) * tlbentries);
-	memset(tlb->LRU_table, 0, (sizeof int) * tlbentries);
+	tlb->LRU_table = (unsigned int *) malloc((sizeof unsigned int) * tlbentries);
+	memset(tlb->LRU_table, 0, (sizeof unsigned int) * tlbentries);
 
+	tlb->valid = (unsigned int *) malloc((sizeof int) * tlbentries);
+	memset(tlb->valid, 0, (sizeof unsigned int) * tlbentries);
 }
 
 int query_entry_tlb(struct TLB * tlb, unsigned int pagenum, int asid)
@@ -70,8 +72,45 @@ int query_entry_tlb(struct TLB * tlb, unsigned int pagenum, int asid)
 	return 0;	// not in tlb
 }
 
-void add_entry_tlb(struct TLB * tlb, unsigned int pagenum, int asid);
+int add_entry_tlb(struct TLB * tlb, unsigned int pagenum, int asid)
+{
+	int replace, entry, found_replacement = 0;
+	// is there an unused entry to fill? 
+	for (entry = 0; entry < tlb->num_entries; entry++)
+	{
+		if (tlb->valid[entry] == 0)
+		{
+			replace = entry;
+			found_replacement = 1;
+			break;
+		} 
+	}
 
+	// else, replace LRU
+	if (!found_replacement)
+	{
+		replace = get_LRU(tlb);
+	}
+
+	tlb->page_table[replace] = pagenum;
+	most_recently_used(tlb, replace);
+
+	if (tlb->ASID_table != NULL)
+	{
+		tlb->ASID_table[replace] = asid;
+	}
+
+	return replace;	
+}
+
+void flush_tlb(struct TLB * tlb)
+{
+	int entry;
+	for (entry = 0; entry < tlb->num_entries; entry++)
+	{
+		tlb->valid[entry] = 0;
+	}
+}
 
 void destroy_tlb(struct TLB * tlb)
 {
