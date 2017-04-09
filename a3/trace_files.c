@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "trace_files.h"
 
+
 struct Trace_Files * create_trace_files(int num_tf) {
 	struct Trace_Files * trace_files;
 
@@ -35,12 +36,12 @@ void destroy_trace_files(struct Trace_Files * trace_files, int num_tf) {
 }
 
 
-void update_avs(struct Trace_Files ** trace_files, int tf, double value) {  // pass in &trace_files
-	int avs_length = sizeof(*trace_files->avs[tf]) / sizeof(double);
+struct Trace_Files * update_avs(struct Trace_Files * trace_files, int tf, double value) {  // pass in &trace_files
+	int avs_length = sizeof(trace_files->avs[tf]) / sizeof(double);
 
-	*trace_files->avs[tf] = (double *) realloc(*trace_files->avs[tf], sizeof(double) * (avs_length+1));  // realloc memory
+	trace_files->avs[tf] = (double *) realloc(trace_files->avs[tf], sizeof(double) * (avs_length+1));  // realloc memory
 
-	*trace_files->avs[tf][avs_length+1] = value;
+	trace_files->avs[tf][avs_length+1] = value;
 }
 
 

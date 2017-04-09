@@ -12,7 +12,7 @@ struct Trace_Files * create_trace_files(int num_tf);
 
 unsigned int get_value_from_tf(struct Trace_Files * trace_files, int file, int offset);
 
-void update_avs(struct Trace_Files ** trace_files, int tf, double value);
+struct Trace_Files * update_avs(struct Trace_Files * trace_files, int tf, double value);
 
 void destroy_trace_files(struct Trace_Files * trace_files, int num_tf);
 
