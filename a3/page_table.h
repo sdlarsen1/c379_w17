@@ -5,6 +5,7 @@ struct Page_Table {
 	unsigned int * logical_addr;  // address in logical memory
 	unsigned int * physical_addr;  // address in physical memory
 	unsigned int * LRU_table;
+	unsigned int * FIFO_table;  // do I need this?
 }
 
 struct Page_Table * create_page_table(int physpages, char mode);  // mode == f or 1

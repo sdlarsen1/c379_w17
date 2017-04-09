@@ -11,13 +11,12 @@ Else:
 	Else:
 		Page fault:
 		pfX ++
-		Find a free frame in page, 
-		or evict a page form processY based on FIFO, or LRU, then pageoutY ++ 
+		Find a free frame in page,
+		or evict a page form processY based on FIFO, or LRU, then pageoutY ++
 		Add to page table
 
 	Add it to TLB
-	Evict anoher from TLB using LRU
+	Evict another from TLB using LRU
 
-Finally		
+Finally
 	update avs for all processes?
-		
