@@ -1,3 +1,5 @@
+#include <stdio.h>
+
 struct Trace_Files {
 	FILE * file_ptrs;
 	int * tlbhits;

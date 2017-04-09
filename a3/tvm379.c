@@ -54,11 +54,13 @@ int main(int argc, char *argv[]) {
 		for (int i = 0; i < (num_tf); i++) {
 			for (int j = 0; j < (final_entry * 4); j += 4) {
 				unsigned int pagenum = get_value_from_tf(trace_files, i, j);
-				if (query_entry(tlb, pagenum)) {
+				
+				if (query_entry_tlb(tlb, pagenum)) {
 					trace_files->tlbhits[i] += 1;  // tlbhit++ if exists
 				} else {
 					if (tlb_mode == 'p') {
 						// flush tlb if not global
+						flush_tlb(tlb);
 					}
 
 					if (!query_page_table(page_table, pagenum)) {  // not in page_table
@@ -68,7 +70,7 @@ int main(int argc, char *argv[]) {
 						}
 					}
 
-					add_entry();
+					add_entry_tlb();
 				}
 			}
 			final_entry += quantum;
