@@ -15,9 +15,15 @@ struct Page_Table * create_page_table(int physpages, char mode) {
         page_table->FIFO_table = malloc((sizeof int) * physpages);
         page_table->LRU_table = NULL;
     }
+
+    return page_table;
 }
 
 
 void destroy_page_table(struct Page_Table * page_table) {
-
+    free(page_table->logical_addr);
+    free(page_table->physical_addr);
+    free(page_table->FIFO_table);
+    free(page_table->LRU_table);
+    free(page_table);
 }
