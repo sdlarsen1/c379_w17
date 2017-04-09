@@ -61,7 +61,8 @@ int main(int argc, char *argv[]) {
 					continue;
 				}
 				// update avgs
-				update_avs(&trace_files, tf, value);
+				double num_entries = count_entries(page_table, tf);
+				trace_files = update_avs(trace_files, tf, num_entries);
 			}
 			final_entry += quantum;
 		}
