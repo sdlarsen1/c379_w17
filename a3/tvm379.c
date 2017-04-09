@@ -7,7 +7,9 @@
 
 int main(int argc, char *argv[]) {
 
-	FILE *trace_files[argc-7];
+	FILE * trace_files[argc-7];
+	int * tlbhits;
+	int * pf;
 
 	if (argc < 8) {
 		printf("Error, missing args!\n");
@@ -26,15 +28,25 @@ int main(int argc, char *argv[]) {
 	}
 
 	bool done = false;
-	int final_entry = quantum
+	int final_entry = quantum;
 	do {
 		for (int i = 0; i < (argc-7); i++) {
 			for (int j = 0; j < (counter * 4); j += 4) {
-				// do stuff here
+				if (query_entry()) {
+
+				} else {
+					// flush tlb if not global
+					if (query_page_table()) {
+
+					} else {
+						add_entry_pt();
+					}
+					add_entry();
+				}
 			}
 			final_entry += quantum;
 		}
-
+		// update values
 	} while (!done);
 
 }
