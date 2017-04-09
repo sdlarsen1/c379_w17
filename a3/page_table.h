@@ -22,6 +22,6 @@ int query_page_table(struct Page_Table * page_table, unsigned int pagenum);  // 
 
 int add_entry_pt(struct Page_Table * page_table, int pagenum, char mode);  // returns 1 if there is an eviction, else 0
 
-
+double count_entries(struct Page_Table * page_table, int pid);
 
 #endif
