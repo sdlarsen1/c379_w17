@@ -58,7 +58,7 @@ int query_entry_tlb(struct TLB * tlb, unsigned int pagenum, int asid)
 	int i;
 	for(i = 0; i < tlb->num_entries; i++)
 	{
-		if (tlb->page_table[i] == pagenum)
+		if ((tlb->page_table[i] == pagenum) && (tlb->valid[i] == 1))
 		{
 			if (tlb->ASID_table == NULL)
 				most_recently_used(tlb, i);

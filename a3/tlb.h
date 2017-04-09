@@ -17,6 +17,7 @@ struct TLB * create_tlb(int tlbentries, char mode);		// mode == g or p
 int query_entry_tlb(struct TLB * tlb, unsigned int pagenum, unsigned int asid);	// returns 1 if page in table, else 0
 
 int add_entry_tlb(struct TLB * tlb, unsigned int pagenum, unsigned int asid);
+// returns the index of the replaced entry
 
 void destroy_tlb(struct TLB * tlb);
 
