@@ -26,7 +26,7 @@ void destroy_trace_files(struct Trace_Files * trace_files, int num_tf) {
 	free(trace_files->pf);
 	free(trace_files->pageout);
 
-	for (int i=0; i < num_tf, i++) {
+	for (int i=0; i < num_tf; i++) {
 		free(trace_files->avs[i]);
 	}
 
@@ -36,7 +36,7 @@ void destroy_trace_files(struct Trace_Files * trace_files, int num_tf) {
 
 
 void update_avs(struct Trace_Files ** trace_files, int tf, double value) {  // pass in &trace_files
-	int avs_length = sizeof(*trace_file->avs[tf]) / sizeof(double);
+	int avs_length = sizeof(*trace_files->avs[tf]) / sizeof(double);
 
 	*trace_files->avs[tf] = (double *) realloc(*trace_files->avs[tf], sizeof(double) * (avs_length+1));  // realloc memory
 
