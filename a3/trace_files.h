@@ -1,4 +1,4 @@
-#include <stdio.h>
+#ifndef TRACE_FILES_H
 
 struct Trace_Files {
 	FILE ** file_ptrs;
@@ -16,4 +16,6 @@ void update_avs(struct Trace_Files ** trace_files, double value);
 
 void destroy_trace_files(struct Trace_Files * trace_files, int num_tf);
 
-double get_avg(struct Trace_Files * trace_files, int tf)
+double get_avg(struct Trace_Files * trace_files, int tf);
+
+#endif

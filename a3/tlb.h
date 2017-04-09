@@ -2,7 +2,7 @@
 #define MAX_TLB_ENTRIES 256
 #define MIN_TLB_ENTRIES 8
 
-struct TLB 
+struct TLB
 {
 	char mode;	// g or p
 	unsigned int num_entries;
