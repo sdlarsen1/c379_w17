@@ -4,7 +4,7 @@
 // update the LRU table
 void most_recently_used(struct TLB * tlb, int MRU)
 {
-	int MRU_rank = tlb->LRU_table[entry];
+	int MRU_rank = tlb->LRU_table[MRU];
 	int entry;
 	for (entry = 0; entry < tlb->num_entries; entry++)
 	{
