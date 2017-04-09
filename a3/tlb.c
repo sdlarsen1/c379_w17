@@ -49,6 +49,8 @@ struct TLB * create_tlb(int tlbentries, char mode)
 
 	tlb->valid = (unsigned int *) malloc((sizeof int) * tlbentries);
 	memset(tlb->valid, 0, (sizeof unsigned int) * tlbentries);
+
+	return tlb;
 }
 
 int query_entry_tlb(struct TLB * tlb, unsigned int pagenum, int asid)
@@ -59,12 +61,16 @@ int query_entry_tlb(struct TLB * tlb, unsigned int pagenum, int asid)
 		if (tlb->page_table[i] == pagenum)
 		{
 			if (tlb->ASID_table == NULL)
+				most_recently_used(tlb, i);
 				return 1;	// found the entry
 
 			else
 			{
 				if (tlb->ASID_table[i] == asid)
+				{
+					most_recently_used(tlb, i);
 					return 1; // found the entry
+				}
 			}
 		}
 	}
