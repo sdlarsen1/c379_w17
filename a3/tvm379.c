@@ -25,7 +25,7 @@ int main(int argc, char *argv[]) {
 	struct Trace_Files * trace_files = create_trace_files(num_tf);
 
 	for (int i = 7; i < argc; i++) {
-    	if ((trace_files->file_ptrs[i] = fopen(argv[i], "r")) == NULL) {
+    	if ((trace_files->file_ptrs[i-7] = fopen(argv[i], "r")) == NULL) {
 			printf("Error, unable to open file: %s\n", argv[i]);
 		}
 	}
@@ -36,11 +36,14 @@ int main(int argc, char *argv[]) {
 
 	bool done = false;
 	int final_entry = quantum;
+	int index_counter = 0;
 	do {
 		for (int tf = 0; tf < (num_tf); tf++) {
-			for (int index = 0; index < (final_entry * 4); index += 4) {
+			int index = 0;
+			for (index += index_counter; index < final_entry; index ++) {
 
 				unsigned int pagenum = get_value_from_tf(trace_files, tf, index);
+				printf("This is the pagenum: %d\n", pagenum);
 
 				if (pagenum != 0) {
 					if (query_entry_tlb(tlb, pagenum, (unsigned int) tf)) {
@@ -65,9 +68,25 @@ int main(int argc, char *argv[]) {
 				// update avgs
 				double num_entries = count_entries(page_table, tf);
 				update_avs(trace_files, tf, num_entries);
+
+				if (index == num_tf-1) {
+					index_counter += index;
+				}
 			}
-			final_entry += quantum;
 		}
+
+		final_entry += quantum;
+
+		int count_done = 0;
+		for (int i = 0; i < num_tf; i++) {
+			if (feof(trace_files->file_ptrs[i])) {
+				count_done ++;
+			}
+		}
+		if (count_done == num_tf) {
+			done = true;
+		}
+
 	} while (!done);
 
 	// print results
