@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 #include "tlb.h"
 
@@ -22,11 +23,12 @@ void most_recently_used(struct TLB * tlb, int MRU)
 // return index of entry that is LRU
 unsigned int get_LRU(struct TLB * tlb)
 {
-	int LRU, max = 0, entry;
+	int LRU = 0, max = 0, entry;
 	for (entry = 0; entry < tlb->num_entries; entry++)
 	{
-		if (tlb->LRU_table[entry] > max)
+		if (tlb->LRU_table[entry] >= max)
 		{
+			max = tlb->LRU_table[entry];
 			LRU = entry;
 		}
 	}
@@ -38,6 +40,9 @@ struct TLB * create_tlb(int tlbentries, char mode)
 {
 	struct TLB * tlb;
 	tlb = (struct TLB *) malloc(sizeof(struct TLB));
+
+	tlb->num_entries = tlbentries;
+
 	tlb->page_table = (unsigned int *) malloc((sizeof(unsigned int)) * tlbentries);
 
 	if (mode == 'p')
@@ -96,13 +101,14 @@ int add_entry_tlb(struct TLB * tlb, unsigned int pagenum, unsigned int asid)
 	}
 
 	// else, replace LRU
-	if (!found_replacement)
+	if (found_replacement == 0)
 	{
 		replace = get_LRU(tlb);
 	}
 
 	tlb->page_table[replace] = pagenum;
 	most_recently_used(tlb, replace);
+	tlb->valid[replace] = 1;
 
 	if (tlb->ASID_table != NULL)
 	{
@@ -127,4 +133,23 @@ void destroy_tlb(struct TLB * tlb)
 	free(tlb->ASID_table);
 	free(tlb->LRU_table);
 	free(tlb);
+}
+
+void print_tlb(struct TLB * tlb)
+{
+	int entry;
+	printf("VALID	PAGE	LRU	ASID\n");
+
+	for (entry = 0; entry < tlb->num_entries; entry++)
+	{
+		printf("%d\t%x\t%d\t", tlb->valid[entry],
+					tlb->page_table[entry],
+					tlb->LRU_table[entry]);
+		if (tlb->ASID_table != NULL)
+			printf("%d\n", tlb->ASID_table[entry]);
+
+		else
+			printf("NULL\n");
+	}
+	printf("\n");
 }

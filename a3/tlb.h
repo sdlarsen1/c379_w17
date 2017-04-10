@@ -23,4 +23,6 @@ void destroy_tlb(struct TLB * tlb);
 
 void flush_tlb(struct TLB * tlb);
 
+void print_tlb(struct TLB * tlb);
+
 #endif
