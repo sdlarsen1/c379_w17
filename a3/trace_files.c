@@ -11,10 +11,10 @@ struct Trace_Files * create_trace_files(int num_tf) {
 	trace_files->tlbhits = (int *) malloc((sizeof(int)) * num_tf);
 	trace_files->pf = (int *) malloc((sizeof(int)) * num_tf);
 	trace_files->pageout = (int *) malloc((sizeof(int)) * num_tf);
-	trace_files->avs = (double **) malloc((sizeof(double *)) * num_tf);
+	trace_files->avs = (long **) malloc((sizeof(long *)) * num_tf);
 
 	for (int i = 0; i < num_tf; i++) {
-		trace_files->avs[i] = (double *) malloc(sizeof(double));
+		trace_files->avs[i] = (long *) malloc(sizeof(long));
 	}
 
 	return trace_files;
@@ -37,16 +37,16 @@ void destroy_trace_files(struct Trace_Files * trace_files, int num_tf) {
 
 
 void update_avs(struct Trace_Files * trace_files, int tf, double value) {
-	int avs_length = sizeof(trace_files->avs[tf]) / sizeof(double);
+	int avs_length = sizeof(trace_files->avs[tf]) / sizeof(long);
 
-	trace_files->avs[tf] = (double *) realloc(trace_files->avs[tf], sizeof(double) * (avs_length+1));  // realloc memory
+	trace_files->avs[tf] = (long *) realloc(trace_files->avs[tf], sizeof(long) * (avs_length+1));  // realloc memory
 
 	trace_files->avs[tf][avs_length+1] = value;  // add new value
 }
 
 
-double get_avg(struct Trace_Files * trace_files, int tf) {
-	int num_values = sizeof(trace_files->avs[tf]) / sizeof(double);
+long get_avg(struct Trace_Files * trace_files, int tf) {
+	int num_values = sizeof(trace_files->avs[tf]) / sizeof(long);
 	int sum = 0;
 
 	for (int i = 0; i < num_values; i++) {

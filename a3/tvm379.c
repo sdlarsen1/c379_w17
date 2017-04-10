@@ -26,7 +26,7 @@ int main(int argc, char *argv[]) {
 
 	for (int i = 7; i < argc; i++) {
 		FILE * file = fopen(argv[i], "r");
-		printf("%p\n", file);
+		// printf("%p\n", file);
 		if (!file) {
 			printf("Error, unable to open file: %s\n", argv[i]);
 			return 1;
@@ -41,11 +41,12 @@ int main(int argc, char *argv[]) {
 
 	bool done = false;
 	int final_entry = quantum;
-	int index_counter = 0;  // master index
+	// int index_counter = 0;  // master index
+	int count_done = 0;
 	do {
 		for (int tf = 0; tf < (num_tf); tf++) {
-			int index = 0;  // temp index, for each trace file
-			for (index += index_counter; index < final_entry; index ++) {
+			// int index = 0;  // temp index, for each trace file
+			for (int index = 0; index < quantum; index++) {
 
 				unsigned int pagenum = get_value_from_tf(trace_files, tf, index);
 				printf("This is the pagenum: %d\n", pagenum);
@@ -68,26 +69,27 @@ int main(int argc, char *argv[]) {
 						add_entry_tlb(tlb, pagenum, (unsigned int) tf+1);
 					}
 				} else {
+					count_done++;
 					continue;
 				}
 				// update avgs
 				double num_entries = count_entries(page_table, tf);
-				update_avs(trace_files, tf, num_entries);
+				update_avs(trace_files, tf, (long) num_entries);
 
-				if (index == num_tf-1) {
-					index_counter += index;  // update the index_counter once done
-				}
+				// if (index == num_tf-1) {
+				// 	index_counter += index;  // update the index_counter once done
+				// }
 			}
 		}
 
-		final_entry += quantum;
+		// final_entry += quantum;
 
-		int count_done = 0;
-		for (int i = 0; i < num_tf; i++) {
-			if (feof(trace_files->file_ptrs[i])) {
-				count_done ++;
-			}
-		}
+		// int count_done = 0;
+		// for (int i = 0; i < num_tf; i++) {
+		// 	if (feof(trace_files->file_ptrs[i])) {
+		// 		count_done ++;
+		// 	}
+		// }
 		if (count_done == num_tf) {
 			done = true;
 		}

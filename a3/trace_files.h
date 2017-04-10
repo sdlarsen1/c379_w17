@@ -5,7 +5,7 @@ struct Trace_Files {
 	int * tlbhits;
 	int * pf;
 	int * pageout;
-    double ** avs;
+    long ** avs;
 };
 
 struct Trace_Files * create_trace_files(int num_tf);
@@ -16,6 +16,6 @@ void update_avs(struct Trace_Files * trace_files, int tf, double value);
 
 void destroy_trace_files(struct Trace_Files * trace_files, int num_tf);
 
-double get_avg(struct Trace_Files * trace_files, int tf);
+long get_avg(struct Trace_Files * trace_files, int tf);
 
 #endif
