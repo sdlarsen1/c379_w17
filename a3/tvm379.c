@@ -25,8 +25,11 @@ int main(int argc, char *argv[]) {
 	struct Trace_Files * trace_files = create_trace_files(num_tf);
 
 	for (int i = 7; i < argc; i++) {
-    	if ((trace_files->file_ptrs[i-7] = fopen(argv[i], "r")) == NULL) {
+		FILE * file = fopen(argv[i], "r");
+		if (!file) {
 			printf("Error, unable to open file: %s\n", argv[i]);
+		} else {
+			trace_files->file_ptrs[i-7] = file;
 		}
 	}
 
@@ -36,10 +39,10 @@ int main(int argc, char *argv[]) {
 
 	bool done = false;
 	int final_entry = quantum;
-	int index_counter = 0;
+	int index_counter = 0;  // master index
 	do {
 		for (int tf = 0; tf < (num_tf); tf++) {
-			int index = 0;
+			int index = 0;  // temp index, for each trace file
 			for (index += index_counter; index < final_entry; index ++) {
 
 				unsigned int pagenum = get_value_from_tf(trace_files, tf, index);
@@ -70,7 +73,7 @@ int main(int argc, char *argv[]) {
 				update_avs(trace_files, tf, num_entries);
 
 				if (index == num_tf-1) {
-					index_counter += index;
+					index_counter += index;  // update the index_counter once done
 				}
 			}
 		}

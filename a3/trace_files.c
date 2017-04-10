@@ -66,9 +66,7 @@ unsigned int get_value_from_tf(struct Trace_Files * trace_files, int tf, int ind
 		printf("Error while reading from file!\n");
 	}
 
-	printf("address before: %p\n", file);
 	fseek(file, offset, SEEK_SET);
-	printf("address now: %p\n", file);
 
 	if (fread(buffer, 4, 1, file)) {
 		unsigned int ret_int = atoi((const char *) buffer);
