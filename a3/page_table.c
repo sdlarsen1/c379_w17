@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include "page_table.h"
 #include <string.h>
+#include <stdio.h>
 
 /*
 	TO DO:
@@ -55,7 +56,7 @@ void destroy_page_table(struct Page_Table * page_table) {
 }
 
 
-int add_entry_pt(struct Page_Table * page_table, int pagenum, char mode) {
+int add_entry_pt(struct Page_Table * page_table, int pagenum, char mode, int pid) {
 	// check to see if there is a free (invalid)
 	int entry, replace, replacement_found = 0, eviction = 0;
 	for (entry = 0; entry < page_table->num_entries; entry++)
@@ -74,6 +75,8 @@ int add_entry_pt(struct Page_Table * page_table, int pagenum, char mode) {
 			else if (mode == 'l')
 				set_MRU_pt(page_table, replace);
 
+			page_table->pid[replace] = pid;
+
 			break;
 
 		}
@@ -85,12 +88,12 @@ int add_entry_pt(struct Page_Table * page_table, int pagenum, char mode) {
 
 		if (mode == 'f')
 		{
-			evict_page_FIFO(page_table, pagenum);//
+			evict_page_FIFO(page_table, pagenum, pid);//
 		}
 
 		else if (mode == 'l')
 		{
-			evict_page_LRU(page_table, pagenum);
+			evict_page_LRU(page_table, pagenum, pid);
 		}
 	}
 
@@ -101,10 +104,11 @@ int add_entry_pt(struct Page_Table * page_table, int pagenum, char mode) {
 }
 
 // !! potentially return PID of evicted page? !!
-int evict_page_LRU(struct Page_Table * page_table, unsigned int new_pagenum)
+int evict_page_LRU(struct Page_Table * page_table, unsigned int new_pagenum, int newpid)
 {
 	int LRU = get_LRU_pt(page_table);
 	int LRU_pid = page_table->pid[LRU];
+	page_table->pid[LRU] = newpid;
 	page_table->logical_addr[LRU] = new_pagenum;
 	set_MRU_pt(page_table, LRU);
 
@@ -112,10 +116,11 @@ int evict_page_LRU(struct Page_Table * page_table, unsigned int new_pagenum)
 	return LRU_pid;
 }
 
-int evict_page_FIFO(struct Page_Table * page_table,unsigned int new_pagenum)
+int evict_page_FIFO(struct Page_Table * page_table,unsigned int new_pagenum, int newpid)
 {
 	int oldest = get_oldest(page_table);
 	int oldest_pid = page_table->pid[oldest];
+	page_table->pid[oldest] = newpid;
 	page_table->logical_addr[oldest] = new_pagenum;
 	FIFO_push(page_table, oldest);
 
@@ -123,12 +128,12 @@ int evict_page_FIFO(struct Page_Table * page_table,unsigned int new_pagenum)
 	return oldest_pid;
 }
 
-int query_page_table(struct Page_Table * page_table, unsigned int pagenum)
+int query_page_table(struct Page_Table * page_table, unsigned int pagenum, int pid)
 {
 	int entry;
         for (entry = 0; entry < page_table->num_entries; entry++)
 	{
-		if (page_table->valid[entry])
+		if ((page_table->valid[entry]) && (page_table->pid[entry] == pid))
 			if (page_table->logical_addr[entry] == pagenum)
 				return 1;
 	}
@@ -205,9 +210,31 @@ int get_LRU_pt(struct Page_Table * pt)
         {
                 if (pt->LRU_table[entry] > max)
                 {
+			max = pt->LRU_table[entry];
                         LRU = entry;
                 }
         }
 
         return LRU;
 }
+
+
+void print_pt(struct Page_Table * pt)
+{
+        int entry;
+
+	printf("VALID	ADDR	LRUFIFO	PID\n");
+        for (entry = 0; entry < pt->num_entries; entry++)
+        {
+                printf("%d\t%x\t", pt->valid[entry], pt->logical_addr[entry]);
+		if (pt->FIFO_table)
+			printf("%d\t", pt->FIFO_table[entry]);
+
+		else if (pt->LRU_table)
+			printf("%d\t", pt->LRU_table[entry]);
+		
+		printf("%d\n", pt->pid[entry]);
+        }
+
+}
+
