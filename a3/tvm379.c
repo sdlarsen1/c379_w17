@@ -26,7 +26,7 @@ int main(int argc, char *argv[]) {
 
 	for (int i = 7; i < argc; i++) {
     	if ((trace_files->file_ptrs[i] = fopen(argv[i], "r")) == NULL) {
-			printf("Error, unable to open file: %s", argv[i]);
+			printf("Error, unable to open file: %s\n", argv[i]);
 		}
 	}
 
@@ -38,17 +38,16 @@ int main(int argc, char *argv[]) {
 	int final_entry = quantum;
 	do {
 		for (int tf = 0; tf < (num_tf); tf++) {
-			for (int offset = 0; offset < (final_entry * 4); offset += 4) {
+			for (int index = 0; index < (final_entry * 4); index += 4) {
 
-				unsigned int pagenum = get_value_from_tf(trace_files, tf, offset);
+				unsigned int pagenum = get_value_from_tf(trace_files, tf, index);
 
 				if (pagenum != 0) {
 					if (query_entry_tlb(tlb, pagenum, (unsigned int) tf)) {
 						trace_files->tlbhits[tf] += 1;  // tlbhit++ if exists
 					} else {
 						if (tlb_mode == 'p') {
-							// flush tlb if not global
-							flush_tlb(tlb);
+							flush_tlb(tlb);  // flush tlb if not global
 						}
 
 						if (!query_page_table(page_table, pagenum)) {  // not in page_table
