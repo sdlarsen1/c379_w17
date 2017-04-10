@@ -25,7 +25,9 @@ int main(int argc, char *argv[]) {
 	struct Trace_Files * trace_files = create_trace_files(num_tf);
 
 	for (int i = 7; i < argc; i++) {
-    	trace_files->file_ptrs[i] = fopen(argv[i], "r");
+    	if ((trace_files->file_ptrs[i] = fopen(argv[i], "r")) == NULL) {
+			printf("Error, unable to open file: %s", argv[i]);
+		}
 	}
 
 	// create tlb and page table
@@ -37,6 +39,7 @@ int main(int argc, char *argv[]) {
 	do {
 		for (int tf = 0; tf < (num_tf); tf++) {
 			for (int offset = 0; offset < (final_entry * 4); offset += 4) {
+
 				unsigned int pagenum = get_value_from_tf(trace_files, tf, offset);
 
 				if (pagenum != 0) {
@@ -62,24 +65,25 @@ int main(int argc, char *argv[]) {
 				}
 				// update avgs
 				double num_entries = count_entries(page_table, tf);
-				trace_files = update_avs(trace_files, tf, num_entries);
+				update_avs(trace_files, tf, num_entries);
 			}
 			final_entry += quantum;
 		}
 	} while (!done);
 
-	// cleanup
-	destroy_page_table(page_table);
-	destroy_tlb(tlb);
-	destroy_trace_files(trace_files, num_tf);
-
-	for (int i; i < num_tf; i++) {
+	// print results
+	for (int i = 0; i < num_tf; i++) {
 		int tlbhits = trace_files->tlbhits[i];
 		int pf = trace_files->pf[i];
 		int pageout = trace_files->pageout[i];
 		double avs = get_avg(trace_files, i);
 
-		printf("tlbhits: %d | pf: %d | pageout: %d | avs: %lf\n", tlbhits, pf, pageout, avs);
+		printf("Trace File: %d | tlbhits: %d | pf: %d | pageout: %d | avs: %lf\n", i, tlbhits, pf, pageout, avs);
 	}
+
+	// cleanup
+	destroy_page_table(page_table);
+	destroy_tlb(tlb);
+	destroy_trace_files(trace_files, num_tf);
 
 }

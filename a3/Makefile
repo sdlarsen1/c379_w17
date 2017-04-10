@@ -17,4 +17,4 @@ trace_files.o: trace_files.c trace_files.h
 	$(CC) -c $(FLAGS) trace_files.c
 
 clean:
-	rm -rf *.o tvm379
+	rm -rf *.o tvm379 *.h.gch
