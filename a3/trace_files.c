@@ -42,6 +42,8 @@ struct Trace_Files * update_avs(struct Trace_Files * trace_files, int tf, double
 	trace_files->avs[tf] = (double *) realloc(trace_files->avs[tf], sizeof(double) * (avs_length+1));  // realloc memory
 
 	trace_files->avs[tf][avs_length+1] = value;  // add new value
+
+	return trace_files;
 }
 
 

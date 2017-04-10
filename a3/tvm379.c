@@ -73,6 +73,13 @@ int main(int argc, char *argv[]) {
 	destroy_tlb(tlb);
 	destroy_trace_files(trace_files, num_tf);
 
-	// print+format values
+	for (int i; i < num_tf; i++) {
+		int tlbhits = trace_files->tlbhits[i];
+		int pf = trace_files->pf[i];
+		int pageout = trace_files->pageout[i];
+		double avs = get_avg(trace_files, i);
+
+		printf("tlbhits: %d | pf: %d | pageout: %d | avs: %lf\n", tlbhits, pf, pageout, avs);
+	}
 
 }

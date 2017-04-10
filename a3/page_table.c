@@ -38,7 +38,7 @@ struct Page_Table * create_page_table(int physpages, char mode) {
     page_table->pid = malloc((sizeof(int)) * physpages);
 
     // allocate for the valid bit
-    page_table->valid = malloc((sizeof(int)) * physpages);	
+    page_table->valid = malloc((sizeof(int)) * physpages);
     memset(page_table->valid, 0, (sizeof (int)) * physpages);
 
     return page_table;
@@ -60,7 +60,7 @@ int add_entry_pt(struct Page_Table * page_table, int pagenum, char mode) {
 	int entry, replace, replacement_found = 0, eviction = 0;
 	for (entry = 0; entry < page_table->num_entries; entry++)
 	{
-		if (page_table->valid[entry] = 0)
+		if (page_table->valid[entry] == 0)
 		{
 			replace = entry;
 			replacement_found = 1;
@@ -75,7 +75,7 @@ int add_entry_pt(struct Page_Table * page_table, int pagenum, char mode) {
 				set_MRU_pt(page_table, replace);
 
 			break;
-			
+
 		}
 	}
 
@@ -211,4 +211,3 @@ int get_LRU_pt(struct Page_Table * pt)
 
         return LRU;
 }
-
