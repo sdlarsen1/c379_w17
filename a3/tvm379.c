@@ -26,8 +26,10 @@ int main(int argc, char *argv[]) {
 
 	for (int i = 7; i < argc; i++) {
 		FILE * file = fopen(argv[i], "r");
+		printf("%p\n", file);
 		if (!file) {
 			printf("Error, unable to open file: %s\n", argv[i]);
+			return 1;
 		} else {
 			trace_files->file_ptrs[i-7] = file;
 		}
@@ -49,21 +51,21 @@ int main(int argc, char *argv[]) {
 				printf("This is the pagenum: %d\n", pagenum);
 
 				if (pagenum != 0) {
-					if (query_entry_tlb(tlb, pagenum, (unsigned int) tf)) {
+					if (query_entry_tlb(tlb, pagenum, (unsigned int) tf+1)) {
 						trace_files->tlbhits[tf] += 1;  // tlbhit++ if exists
 					} else {
 						if (tlb_mode == 'p') {
 							flush_tlb(tlb);  // flush tlb if not global
 						}
 
-						if (!query_page_table(page_table, pagenum)) {  // not in page_table
+						if (!query_page_table(page_table, pagenum, tf+1)) {  // not in page_table
 							trace_files->pf[tf] += 1;
-							if (add_entry_pt(page_table, pagenum, pt_mode)) {
+							if (add_entry_pt(page_table, pagenum, pt_mode, tf+1)) {
 								trace_files->pageout[tf] += 1;
 							}
 						}
 
-						add_entry_tlb(tlb, pagenum, (unsigned int) tf);
+						add_entry_tlb(tlb, pagenum, (unsigned int) tf+1);
 					}
 				} else {
 					continue;

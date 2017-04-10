@@ -58,21 +58,23 @@ double get_avg(struct Trace_Files * trace_files, int tf) {
 
 
 unsigned int get_value_from_tf(struct Trace_Files * trace_files, int tf, int index) {
-	unsigned char buffer[4];
+	unsigned char buffer[5];
 	size_t offset = index * 4;
 
 	FILE * file = trace_files->file_ptrs[tf];
+	printf("File inside get_value: %p\n", file);
 	if (!file) {
 		printf("Error while reading from file!\n");
 	}
 
-	fseek(file, offset, SEEK_SET);
+	// if (fseek(file, offset, SEEK_SET) != 0) {
+	// 	printf("Unable to seek.\n");
+	// }
 
-	if (fread(buffer, 4, 1, file)) {
-		unsigned int ret_int = atoi((const char *) buffer);
-		printf("This is the buffer: %s and this is the int: %d\n", buffer, ret_int);
-		return ret_int;
-	} else {
-		return 0;
-	}
+	fread(buffer, 4, 1, file);
+	buffer[4] = '\0';
+	unsigned int ret_int = atoi((const char *) buffer);
+	printf("This is the buffer: %s and this is the int: %d\n", buffer, ret_int);
+	return ret_int;
+
 }
