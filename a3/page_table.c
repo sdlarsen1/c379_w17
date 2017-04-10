@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include "page_table.h"
+#include <string.h>
 
 /*
 	TO DO:
@@ -84,7 +85,7 @@ int add_entry_pt(struct Page_Table * page_table, int pagenum, char mode) {
 
 		if (mode == 'f')
 		{
-			evict_page_FIFO(page_table, pagenum)//
+			evict_page_FIFO(page_table, pagenum);//
 		}
 
 		else if (mode == 'l')
@@ -104,7 +105,7 @@ int evict_page_LRU(struct Page_Table * page_table, unsigned int new_pagenum)
 {
 	int LRU = get_LRU_pt(page_table);
 	int LRU_pid = page_table->pid[LRU];
-	page_table->logical_addr = new_pagenum;
+	page_table->logical_addr[LRU] = new_pagenum;
 	set_MRU_pt(page_table, LRU);
 
 	// return PID
@@ -115,8 +116,8 @@ int evict_page_FIFO(struct Page_Table * page_table,unsigned int new_pagenum)
 {
 	int oldest = get_oldest(page_table);
 	int oldest_pid = page_table->pid[oldest];
-	page_table->logical_addr = new_pagenum;
-	FIFO_push(oldest);
+	page_table->logical_addr[oldest] = new_pagenum;
+	FIFO_push(page_table, oldest);
 
 	// return PID
 	return oldest_pid;
@@ -125,7 +126,7 @@ int evict_page_FIFO(struct Page_Table * page_table,unsigned int new_pagenum)
 int query_page_table(struct Page_Table * page_table, unsigned int pagenum)
 {
 	int entry;
-        for (entry = 0; entry < pt->num_entries; entry++)
+        for (entry = 0; entry < page_table->num_entries; entry++)
 	{
 		if (page_table->valid[entry])
 			if (page_table->logical_addr[entry] == pagenum)
@@ -139,7 +140,7 @@ double count_entries(struct Page_Table * page_table, int pid)
 {
 	int entry;
 	double count = 0;
-        for (entry = 0; entry < pt->num_entries; entry++)
+        for (entry = 0; entry < page_table->num_entries; entry++)
 	{
 		if (page_table->pid[entry] == pid)
 			if (page_table->valid[entry] == 1)
@@ -150,7 +151,7 @@ double count_entries(struct Page_Table * page_table, int pid)
 }
 
 // add a new page in FIFO, at index {new}.
-void FIFO_push(struct Page_Table * pt, int new);
+void FIFO_push(struct Page_Table * pt, int new)
 {
 	int entry;
         for (entry = 0; entry < pt->num_entries; entry++)
@@ -173,7 +174,7 @@ int get_oldest(struct Page_Table * pt)
 		if (pt->FIFO_table[entry] > max)
 		{
 			oldest = entry;
-			max = pt->FIFO_table[entry]
+			max = pt->FIFO_table[entry];
 		}
 	}
 
@@ -183,7 +184,7 @@ int get_oldest(struct Page_Table * pt)
 // update the LRU array
 void set_MRU_pt(struct Page_Table * pt, int MRU)
 {
-        int MRU_rank = pt->LRU_table[entry];
+        int MRU_rank = pt->LRU_table[MRU];
         int entry;
         for (entry = 0; entry < pt->num_entries; entry++)
         {
@@ -197,7 +198,7 @@ void set_MRU_pt(struct Page_Table * pt, int MRU)
 }
 
 // return the index of the LRU page
-int get_LRU_pt(struct Page_Table * pt);
+int get_LRU_pt(struct Page_Table * pt)
 {
         int LRU, max = 0, entry;
         for (entry = 0; entry < pt->num_entries; entry++)
