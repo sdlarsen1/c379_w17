@@ -42,6 +42,7 @@ int main(int argc, char *argv[]) {
 	bool done = false;
 	int final_entry = quantum;
 	int previous_tf = 0;
+	int num_accesses = 0;  // number of access across sim
 	do {
 		int count_done = 0;  // # of finished trace files, reset each time through the while loop
 		int read_from;  // 1 if we read from tf, 0 otherwise
@@ -62,6 +63,7 @@ int main(int argc, char *argv[]) {
 
 				if (!feof(trace_files->file_ptrs[tf])) {
 					read_from = 1;
+					num_accesses ++;
 					if (query_entry_tlb(tlb, pagenum, (unsigned int) tf+1)) {
 						trace_files->tlbhits[tf] += 1;  // tlbhit++ if exists
 
@@ -102,7 +104,7 @@ int main(int argc, char *argv[]) {
 		int tlbhits = trace_files->tlbhits[i];
 		int pf = trace_files->pf[i];
 		int pageout = trace_files->pageout[i];
-		double avs = get_avg(trace_files, i);
+		double avs = get_avg(trace_files, i, num_accesses);
 
 		printf("Trace File: %d | tlbhits: %d | pf: %d | pageout: %d | avs: %lf\n", i, tlbhits, pf, pageout, avs);
 	}
