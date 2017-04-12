@@ -1,11 +1,11 @@
 #ifndef TRACE_FILES_H
 
 struct Trace_Files {
-	FILE ** file_ptrs;
-	int * tlbhits;
-	int * pf;
-	int * pageout;
-    long ** avs;
+	FILE ** file_ptrs;  // array of file ptrs
+	int * tlbhits;  // array of number of tlbhits per tf
+	int * pf;  // array of number pf per tf
+	int * pageout;  // array of number of evictions per tf
+    long ** avs;  // array of num entries per iteration per tf
 };
 
 struct Trace_Files * create_trace_files(int num_tf);

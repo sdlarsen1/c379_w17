@@ -5,11 +5,11 @@
 struct TLB
 {
 	char mode;	// g or p
-	unsigned int num_entries;
-	unsigned int * page_table;
-	unsigned int * ASID_table;
-	unsigned int * LRU_table;
-	unsigned int * valid;
+	unsigned int num_entries;  // number of entries
+	unsigned int * page_table;  // array of page table entries
+	unsigned int * ASID_table;  // array of ASID values
+	unsigned int * LRU_table;  // array of LRU values
+	unsigned int * valid;  // valid 'bit' for each entry
 };
 
 struct TLB * create_tlb(int tlbentries, char mode);		// mode == g or p
