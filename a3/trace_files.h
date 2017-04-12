@@ -5,7 +5,7 @@ struct Trace_Files {
 	int * tlbhits;  // array of number of tlbhits per tf
 	int * pf;  // array of number pf per tf
 	int * pageout;  // array of number of evictions per tf
-    long * avs;  // array of num entries per iteration per tf
+    long long * avs;  // sum of valid entries used to produce avg valid pages in memory per tf
 };
 
 struct Trace_Files * create_trace_files(int num_tf);

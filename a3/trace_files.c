@@ -11,7 +11,7 @@ struct Trace_Files * create_trace_files(int num_tf) {
 	trace_files->tlbhits = (int *) malloc((sizeof(int)) * num_tf);
 	trace_files->pf = (int *) malloc((sizeof(int)) * num_tf);
 	trace_files->pageout = (int *) malloc((sizeof(int)) * num_tf);
-	trace_files->avs = (long *) malloc((sizeof(long)) * num_tf);
+	trace_files->avs = (long long *) malloc((sizeof(long long)) * num_tf);
 
 	return trace_files;
 }
