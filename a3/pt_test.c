@@ -4,7 +4,7 @@
 int main(void)
 {
 	int test;
-	char mode = 'l';
+	char mode = 'f';
 	struct Page_Table * pt = create_page_table(8, mode);
 	printf("size: %d\n", pt->num_entries);
 	printf("Adding 8 pages\n");

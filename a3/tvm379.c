@@ -104,9 +104,9 @@ int main(int argc, char *argv[]) {
 		int tlbhits = trace_files->tlbhits[i];
 		int pf = trace_files->pf[i];
 		int pageout = trace_files->pageout[i];
-		double avs = get_avg(trace_files, i, num_accesses);
+		long avs = get_avg(trace_files, i, num_accesses);
 
-		printf("Trace File: %d | tlbhits: %d | pf: %d | pageout: %d | avs: %lf\n", i, tlbhits, pf, pageout, avs);
+		printf("Trace File: %d | tlbhits: %d | pf: %d | pageout: %d | avs: %ld\n", i, tlbhits, pf, pageout, avs);
 	}
 
 	// cleanup
