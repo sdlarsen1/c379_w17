@@ -41,10 +41,18 @@ int main(int argc, char *argv[]) {
 
 	bool done = false;
 	int final_entry = quantum;
+	int previous_tf = 0;
 	do {
 		int count_done = 0;  // # of finished trace files, reset each time through the while loop
+		int read_from;  // 1 if we read from tf, 0 otherwise
 
 		for (int tf = 0; tf < (num_tf); tf++) {  // for every trace file
+
+			if ((tlb_mode == 'p') && (read_from) && (previous_tf != tf)) {
+				flush_tlb(tlb);  // flush tlb if not global
+			}
+
+			read_from = 0;  // init as 0 before reading from tf
 			for (int index = 0; index < quantum; index++) {  // for quantum entries
 
 				unsigned int address = get_value_from_tf(trace_files, tf, index);
@@ -53,13 +61,11 @@ int main(int argc, char *argv[]) {
 				printf("This is the pagenum: %x\n", pagenum);
 
 				if (!feof(trace_files->file_ptrs[tf])) {
+					read_from = 1;
 					if (query_entry_tlb(tlb, pagenum, (unsigned int) tf+1)) {
 						trace_files->tlbhits[tf] += 1;  // tlbhit++ if exists
-					} else {
-						if (tlb_mode == 'p') {
-							flush_tlb(tlb);  // flush tlb if not global
-						}
 
+					} else {
 						if (!query_page_table(page_table, pagenum, tf+1)) {  // not in page_table
 							trace_files->pf[tf] += 1;
 							int evicted = add_entry_pt(page_table, pagenum, pt_mode, tf+1);
@@ -72,11 +78,16 @@ int main(int argc, char *argv[]) {
 					}
 				} else {
 					count_done++;
-					break;  // move on to next race file, this one is done
+					break;  // move on to next trace file, this one is done
 				}
+
 				// update avgs
 				double num_entries = count_entries(page_table, tf);
 				update_avs(trace_files, tf, (long) num_entries);
+			}
+
+			if (read_from) {
+				previous_tf = tf;  // assign previous tf before context switch if it's been read
 			}
 		}
 
