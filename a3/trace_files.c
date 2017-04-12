@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "trace_files.h"
-
+#include <arpa/inet.h>
 
 struct Trace_Files * create_trace_files(int num_tf) {
 	struct Trace_Files * trace_files;

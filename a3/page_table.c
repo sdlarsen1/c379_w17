@@ -131,13 +131,22 @@ int evict_page_FIFO(struct Page_Table * page_table,unsigned int new_pagenum, int
 int query_page_table(struct Page_Table * page_table, unsigned int pagenum, int pid)
 {
 	int entry;
+	// iterate through all entries
         for (entry = 0; entry < page_table->num_entries; entry++)
 	{
+		// if pagenum and pid match, and the page is valid...
 		if ((page_table->valid[entry]) && (page_table->pid[entry] == pid))
+		{
 			if (page_table->logical_addr[entry] == pagenum)
+			{
+				if (page_table->LRU_table) // if lru, update the table
+					set_MRU_pt(page_table, entry);
+				
 				return 1;
+			}
+		}
 	}
-	return 0;
+	return 0; // not found
 }
 
 // maybe cache these values in an other array?

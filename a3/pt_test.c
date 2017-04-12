@@ -23,8 +23,13 @@ int main(void)
 	add_entry_pt(pt, 0xCFF2, mode, 2);
 	print_pt(pt);
 
-	printf("Adding 1 more page\n");
-        add_entry_pt(pt, 0xABC9, mode, 3);
+	printf("Querying page 0xFFF4, process 4\n");
+        test = query_page_table(pt, 0xFFF4, 4);
+        if (test)
+                printf("The page was found\n");
+        else
+                printf("The page was not found\n");
+
         print_pt(pt);
 
 	printf("Adding 1 more page\n");
@@ -33,7 +38,7 @@ int main(void)
 
 
 	printf("Querying page 0xFADF, process 1\n");
-        test = query_page_table(pt, 0xFADF, 1);
+        test = query_page_table(pt, 0xFADF, 2);
 	if (test)
                 printf("The page was found\n");
         else
