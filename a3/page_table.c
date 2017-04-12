@@ -49,9 +49,9 @@ void destroy_page_table(struct Page_Table * page_table) {
     free(page_table);
 }
 
-// Add an entry to the page table
+// Add an entry to the page table. If an eviction occurs, return the pid of the evicted page, else return 0
 int add_entry_pt(struct Page_Table * page_table, int pagenum, char mode, int pid) {
-	// check to see if there is a free (invalid)
+	// check to see if there is a free (invalid) frame
 	int entry, replace, replacement_found = 0, eviction = 0;
 	for (entry = 0; entry < page_table->num_entries; entry++)
 	{
@@ -99,7 +99,7 @@ int add_entry_pt(struct Page_Table * page_table, int pagenum, char mode, int pid
 	return 0;
 }
 
-// !! potentially return PID of evicted page? !!
+// evict a page based on lru algorithm. returns the pid of the evicted page
 int evict_page_LRU(struct Page_Table * page_table, unsigned int new_pagenum, int newpid)
 {
 	int LRU = get_LRU_pt(page_table);
@@ -112,6 +112,7 @@ int evict_page_LRU(struct Page_Table * page_table, unsigned int new_pagenum, int
 	return LRU_pid;
 }
 
+// evict a page based on fifo algorithm. returns the pid of the evicted page
 int evict_page_FIFO(struct Page_Table * page_table,unsigned int new_pagenum, int newpid)
 {
 	int oldest = get_oldest(page_table);
@@ -124,6 +125,7 @@ int evict_page_FIFO(struct Page_Table * page_table,unsigned int new_pagenum, int
 	return oldest_pid;
 }
 
+// query the page table to see if a page is present
 int query_page_table(struct Page_Table * page_table, unsigned int pagenum, int pid)
 {
 	int entry;
@@ -135,7 +137,7 @@ int query_page_table(struct Page_Table * page_table, unsigned int pagenum, int p
 		{
 			if (page_table->logical_addr[entry] == pagenum)
 			{
-				if (page_table->LRU_table) // if lru, update the table
+				if (page_table->LRU_table) // if lru, update the lru table
 					set_MRU_pt(page_table, entry);
 				
 				return 1;
@@ -145,7 +147,7 @@ int query_page_table(struct Page_Table * page_table, unsigned int pagenum, int p
 	return 0; // not found
 }
 
-// maybe cache these values in an other array?
+// count the number of pages belonging to process pid present in memory
 double count_entries(struct Page_Table * page_table, int pid)
 {
 	int entry;
@@ -191,7 +193,7 @@ int get_oldest(struct Page_Table * pt)
 	return oldest;
 }
 
-// update the LRU array
+// update the LRU array, so the MRU is most recently used page
 void set_MRU_pt(struct Page_Table * pt, int MRU)
 {
         int MRU_rank = pt->LRU_table[MRU];
@@ -223,7 +225,7 @@ int get_LRU_pt(struct Page_Table * pt)
         return LRU;
 }
 
-
+// print the page table, (for testing only)
 void print_pt(struct Page_Table * pt)
 {
         int entry;
