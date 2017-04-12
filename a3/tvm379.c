@@ -41,17 +41,16 @@ int main(int argc, char *argv[]) {
 
 	bool done = false;
 	int final_entry = quantum;
-	// int index_counter = 0;  // master index
-	int count_done = 0;
 	do {
-		for (int tf = 0; tf < (num_tf); tf++) {
-			// int index = 0;  // temp index, for each trace file
-			for (int index = 0; index < quantum; index++) {
+		int count_done = 0;  // # of finished trace files, reset each time through the while loop
+
+		for (int tf = 0; tf < (num_tf); tf++) {  // for every trace file
+			for (int index = 0; index < quantum; index++) {  // for quantum entries
 
 				unsigned int pagenum = get_value_from_tf(trace_files, tf, index);
 				printf("This is the pagenum: %d\n", pagenum);
 
-				if (pagenum != 0) {
+				if (!feof(trace_files->file_ptrs[tf])) {
 					if (query_entry_tlb(tlb, pagenum, (unsigned int) tf+1)) {
 						trace_files->tlbhits[tf] += 1;  // tlbhit++ if exists
 					} else {
@@ -61,8 +60,9 @@ int main(int argc, char *argv[]) {
 
 						if (!query_page_table(page_table, pagenum, tf+1)) {  // not in page_table
 							trace_files->pf[tf] += 1;
-							if (add_entry_pt(page_table, pagenum, pt_mode, tf+1)) {
-								trace_files->pageout[tf] += 1;
+							int evicted = add_entry_pt(page_table, pagenum, pt_mode, tf+1);
+							if (evicted) {
+								trace_files->pageout[evicted-1] += 1;
 							}
 						}
 
@@ -70,26 +70,14 @@ int main(int argc, char *argv[]) {
 					}
 				} else {
 					count_done++;
-					continue;
+					break;  // move on to next race file, this one is done
 				}
 				// update avgs
 				double num_entries = count_entries(page_table, tf);
 				update_avs(trace_files, tf, (long) num_entries);
-
-				// if (index == num_tf-1) {
-				// 	index_counter += index;  // update the index_counter once done
-				// }
 			}
 		}
 
-		// final_entry += quantum;
-
-		// int count_done = 0;
-		// for (int i = 0; i < num_tf; i++) {
-		// 	if (feof(trace_files->file_ptrs[i])) {
-		// 		count_done ++;
-		// 	}
-		// }
 		if (count_done == num_tf) {
 			done = true;
 		}
