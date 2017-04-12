@@ -28,7 +28,7 @@ void destroy_trace_files(struct Trace_Files * trace_files, int num_tf) {
 
 
 void update_avs(struct Trace_Files * trace_files, int tf, double value) {
-	trace_files->avs[tf] += value;
+	trace_files->avs[tf] += value;  // adds to the running sum
 }
 
 
@@ -40,16 +40,16 @@ long get_avg(struct Trace_Files * trace_files, int tf, int num_accesses) {
 }
 
 
-unsigned int get_value_from_tf(struct Trace_Files * trace_files, int tf, int index) {
+unsigned int get_value_from_tf(struct Trace_Files * trace_files, int tf, int index) {  // get memory ref. from trace file
 	unsigned char buffer[4];
 	size_t offset = index * 4;
 
-	FILE * file = trace_files->file_ptrs[tf];
+	FILE * file = trace_files->file_ptrs[tf];  // get specified file
 	if (!file) {
 		printf("Error while reading from file!\n");
 	}
 
-	fread(buffer, 4, 1, file);
+	fread(buffer, 4, 1, file);  // pulls a single 4-byte value from the trace file
 	unsigned int ret_int;
 	ret_int = buffer[0];
 	ret_int <<= 8;
@@ -62,5 +62,4 @@ unsigned int get_value_from_tf(struct Trace_Files * trace_files, int tf, int ind
 	ret_int = ntohl(ret_int);
 
 	return ret_int;
-
 }
