@@ -59,7 +59,7 @@ int main(int argc, char *argv[]) {
 				unsigned int address = get_value_from_tf(trace_files, tf, index);
 				unsigned int pagenum = (address & (~(pgsize-1)));
 
-				printf("This is the pagenum: %x\n", pagenum);
+				// printf("This is the pagenum: %x\n", pagenum);
 
 				if (!feof(trace_files->file_ptrs[tf])) {
 					read_from = 1;
