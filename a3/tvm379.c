@@ -47,8 +47,10 @@ int main(int argc, char *argv[]) {
 		for (int tf = 0; tf < (num_tf); tf++) {  // for every trace file
 			for (int index = 0; index < quantum; index++) {  // for quantum entries
 
-				unsigned int pagenum = get_value_from_tf(trace_files, tf, index);
-				printf("This is the pagenum: %d\n", pagenum);
+				unsigned int address = get_value_from_tf(trace_files, tf, index);
+				unsigned int pagenum = (address & (~(pgsize-1)));
+
+				printf("This is the pagenum: %x\n", pagenum);
 
 				if (!feof(trace_files->file_ptrs[tf])) {
 					if (query_entry_tlb(tlb, pagenum, (unsigned int) tf+1)) {

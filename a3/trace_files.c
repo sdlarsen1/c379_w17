@@ -84,7 +84,6 @@ unsigned int get_value_from_tf(struct Trace_Files * trace_files, int tf, int ind
 
 	ret_int = ntohl(ret_int);
 
-	printf("Buffer[0] %x,This is the int: %x\n", buffer[0], ret_int);
 	return ret_int;
 
 }

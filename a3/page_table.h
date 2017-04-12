@@ -1,5 +1,4 @@
 #ifndef PAGE_TABLE_H
-#define MAX_PHYSPAGES 1000000
 
 struct Page_Table {
 	unsigned int num_entries;  // number of entries in page table
