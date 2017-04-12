@@ -23,7 +23,6 @@ struct Page_Table * create_page_table(int physpages, char mode) {
     page_table->num_entries = physpages;
 
     page_table->logical_addr = malloc((sizeof(int)) * physpages);
-    page_table->physical_addr = malloc((sizeof(int)) * physpages);
 
     if (mode == 'l') {
         page_table->LRU_table = malloc((sizeof(int)) * physpages);
@@ -48,7 +47,6 @@ struct Page_Table * create_page_table(int physpages, char mode) {
 
 void destroy_page_table(struct Page_Table * page_table) {
     free(page_table->logical_addr);
-    free(page_table->physical_addr);
     free(page_table->FIFO_table);
     free(page_table->LRU_table);
     free(page_table->valid);
@@ -234,9 +232,8 @@ void print_pt(struct Page_Table * pt)
 
 		else if (pt->LRU_table)
 			printf("%d\t", pt->LRU_table[entry]);
-		
+
 		printf("%d\n", pt->pid[entry]);
         }
 
 }
-

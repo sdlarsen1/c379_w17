@@ -2,12 +2,11 @@
 #define MAX_PHYSPAGES 1000000
 
 struct Page_Table {
-	unsigned int num_entries;
+	unsigned int num_entries;  // number of entries in page table
 	unsigned int * logical_addr;  // address in logical memory
-	unsigned int * physical_addr;  // address in physical memory
-	unsigned int * LRU_table;
-	unsigned int * FIFO_table;
-	unsigned int * valid;
+	unsigned int * LRU_table;  // LRU table
+	unsigned int * FIFO_table;  // FIFO table
+	unsigned int * valid;  // valid 'bit' for each entry
 	unsigned int * pid;	// process id
 };
 
