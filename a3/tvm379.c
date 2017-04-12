@@ -42,7 +42,7 @@ int main(int argc, char *argv[]) {
 	bool done = false;
 	int final_entry = quantum;
 	int previous_tf = 0;
-	int num_accesses = 0;  // number of access across sim
+	unsigned long num_accesses = 0;  // number of access across sim
 	do {
 		int count_done = 0;  // # of finished trace files, reset each time through the while loop
 		int read_from;  // 1 if we read from tf, 0 otherwise

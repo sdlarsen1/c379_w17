@@ -3,7 +3,7 @@
 #include <string.h>
 #include "tlb.h"
 
-// update the LRU table
+// update the LRU table, so that MRU is the most recently used, and all other members are adjusted accordingly
 void most_recently_used(struct TLB * tlb, int MRU)
 {
 	int entry;
@@ -20,7 +20,7 @@ void most_recently_used(struct TLB * tlb, int MRU)
 	tlb->LRU_table[MRU] = 0;
 }
 
-// return index of entry that is LRU
+// return index of the entry which is the least recently used
 unsigned int get_LRU(struct TLB * tlb)
 {
 	int LRU = 0, max = 0, entry;
@@ -36,6 +36,7 @@ unsigned int get_LRU(struct TLB * tlb)
 	return LRU;
 }
 
+// allocates space for the tlb data structure, which is defined in tlb.h
 struct TLB * create_tlb(int tlbentries, char mode)
 {
 	struct TLB * tlb;
@@ -60,6 +61,7 @@ struct TLB * create_tlb(int tlbentries, char mode)
 	return tlb;
 }
 
+// searches through the tlb to find an entry with matching asid and pagenum.
 int query_entry_tlb(struct TLB * tlb, unsigned int pagenum, unsigned int asid)
 {
 	int i;
@@ -86,6 +88,7 @@ int query_entry_tlb(struct TLB * tlb, unsigned int pagenum, unsigned int asid)
 	return 0;	// not in tlb
 }
 
+// adds and entry to the tlb, and returns the index where it was added.
 int add_entry_tlb(struct TLB * tlb, unsigned int pagenum, unsigned int asid)
 {
 	int replace, entry, found_replacement = 0;
@@ -118,6 +121,7 @@ int add_entry_tlb(struct TLB * tlb, unsigned int pagenum, unsigned int asid)
 	return replace;
 }
 
+// set the valid bit for all entries in the tlb to 0
 void flush_tlb(struct TLB * tlb)
 {
 	int entry;
@@ -127,6 +131,7 @@ void flush_tlb(struct TLB * tlb)
 	}
 }
 
+// frees all the space allocated by tlb
 void destroy_tlb(struct TLB * tlb)
 {
 	free(tlb->page_table);
@@ -135,6 +140,7 @@ void destroy_tlb(struct TLB * tlb)
 	free(tlb);
 }
 
+// prints the contents of the tlb (for testing)
 void print_tlb(struct TLB * tlb)
 {
 	int entry;

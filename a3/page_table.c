@@ -3,11 +3,6 @@
 #include <string.h>
 #include <stdio.h>
 
-/*
-	TO DO:
-		complete implementation of PID tracking in add_entry, evict page
-*/
-
 // push a new entry into the FIFO array
 void FIFO_push(struct Page_Table * pt, int new);
 int get_oldest(struct Page_Table * pt);
@@ -16,6 +11,7 @@ int get_oldest(struct Page_Table * pt);
 void set_MRU_pt(struct Page_Table * pt, int MRU);
 int get_LRU_pt(struct Page_Table * pt);
 
+// allocate a create the page table
 struct Page_Table * create_page_table(int physpages, char mode) {
     struct Page_Table * page_table;
     page_table = malloc(sizeof(struct Page_Table));
@@ -44,7 +40,7 @@ struct Page_Table * create_page_table(int physpages, char mode) {
     return page_table;
 }
 
-
+// free the space from the page table
 void destroy_page_table(struct Page_Table * page_table) {
     free(page_table->logical_addr);
     free(page_table->FIFO_table);
@@ -53,7 +49,7 @@ void destroy_page_table(struct Page_Table * page_table) {
     free(page_table);
 }
 
-
+// Add an entry to the page table
 int add_entry_pt(struct Page_Table * page_table, int pagenum, char mode, int pid) {
 	// check to see if there is a free (invalid)
 	int entry, replace, replacement_found = 0, eviction = 0;
