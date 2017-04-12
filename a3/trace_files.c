@@ -47,10 +47,11 @@ void update_avs(struct Trace_Files * trace_files, int tf, double value) {
 
 long get_avg(struct Trace_Files * trace_files, int tf) {
 	int num_values = sizeof(trace_files->avs[tf]) / sizeof(long);
-	int sum = 0;
+	long sum = 0;
 
 	for (int i = 0; i < num_values; i++) {
 		sum += trace_files->avs[tf][i];
+		printf("summing %ld\n", trace_files->avs[tf][i]);
 	}
 
 	return (sum / num_values);
@@ -62,18 +63,12 @@ unsigned int get_value_from_tf(struct Trace_Files * trace_files, int tf, int ind
 	size_t offset = index * 4;
 
 	FILE * file = trace_files->file_ptrs[tf];
-	//printf("File inside get_value: %p\n", file);
 	if (!file) {
 		printf("Error while reading from file!\n");
 	}
 
-	// if (fseek(file, offset, SEEK_SET) != 0) {
-	// 	printf("Unable to seek.\n");
-	// }
-
 	fread(buffer, 4, 1, file);
-	//buffer[4] = '\0';
-	unsigned int ret_int;// = atoi((const char *) buffer);
+	unsigned int ret_int;
 	ret_int = buffer[0];
 	ret_int <<= 8;
 	ret_int += buffer[1];

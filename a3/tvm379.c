@@ -82,7 +82,7 @@ int main(int argc, char *argv[]) {
 				}
 
 				// update avgs
-				double num_entries = count_entries(page_table, tf);
+				long num_entries = count_entries(page_table, tf+1);
 				update_avs(trace_files, tf, (long) num_entries);
 			}
 
