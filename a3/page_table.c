@@ -82,23 +82,25 @@ int add_entry_pt(struct Page_Table * page_table, int pagenum, char mode, int pid
 		}
 	}
 
+	eviction = 0;
+
 	if (!replacement_found)
 	{
-		eviction = 1; // evict a page
+		// evict a page
 
 		if (mode == 'f')
 		{
-			evict_page_FIFO(page_table, pagenum, pid);//
+			eviction = evict_page_FIFO(page_table, pagenum, pid);//
 		}
 
 		else if (mode == 'l')
 		{
-			evict_page_LRU(page_table, pagenum, pid);
+			eviction = evict_page_LRU(page_table, pagenum, pid);
 		}
 	}
 
 	if (eviction)
-		return 1;
+		return eviction;
 
 	return 0;
 }
